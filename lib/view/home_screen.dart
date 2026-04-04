@@ -1,5 +1,5 @@
 import 'package:electronic_component_storage_app/view/add_component_screen.dart';
-import 'package:electronic_component_storage_app/view/dashboard_screen.dart';
+import 'package:electronic_component_storage_app/view/dashboard/dashboard_screen.dart';
 import 'package:electronic_component_storage_app/view/notification_screen.dart';
 import 'package:electronic_component_storage_app/view/profile/profile_screen.dart';
 import 'package:electronic_component_storage_app/view/storage_screen.dart';
@@ -42,11 +42,11 @@ class HomeScreen extends StatelessWidget {
             title: "Kho linh kiện",
           ),
         ),
-        PersistentTabConfig(
-          screen: const AddComponentScreen(),
-          item: _itemConfigBuilder(icon: Icon(Icons.add), inactiveForegroundColor: Colors.white),
-          //item: ItemConfig(icon: Icon(Icons.add), inactiveForegroundColor: Colors.white, activeForegroundColor: Color(0xFF006064))
-        ),
+        // PersistentTabConfig(
+        //   screen: const AddComponentScreen(),
+        //   item: _itemConfigBuilder(icon: Icon(Icons.add), inactiveForegroundColor: Colors.white),
+        //   //item: ItemConfig(icon: Icon(Icons.add), inactiveForegroundColor: Colors.white, activeForegroundColor: Color(0xFF006064))
+        // ),
         PersistentTabConfig(
           screen: const NotificationScreen(),
           item: _itemConfigBuilder(icon: Icon(Icons.notifications), title: "Thông báo"),
@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ],
 
-      navBarBuilder: (navBarConfig) => Style14BottomNavBar(
+      navBarBuilder: (navBarConfig) => Style4BottomNavBar(
         navBarConfig: navBarConfig,
       ),
     );
