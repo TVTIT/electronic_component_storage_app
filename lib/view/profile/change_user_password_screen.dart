@@ -21,6 +21,65 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
 
   bool _isLoading = false;
 
+  Future<void> _changeUserPassword() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await SupabaseAccountController.updateUserPassword(
+          _passwordController.text,
+        );
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (dialogContext) => AlertDialog(
+              title: const Text("Đổi mật khẩu thành công"),
+              content: const Text("Bạn đã đổi mật khẩu thành công"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+        }
+      } on AuthException catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(
+                child: Text(
+                  SupabaseAccountController.loginErrorCodeMap[e.code] ??
+                      e.message,
+                ),
+              ),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Lỗi hệ thống. Vui lòng thử lại")),
+          );
+        }
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,19 +98,24 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
+                onTapOutside: (event) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   hintText: "Nhập mật khẩu mới",
                   prefixIcon: Icon(Icons.lock),
 
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                    icon: _obscurePassword
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility),
+                  suffixIcon: ExcludeFocus(
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      icon: _obscurePassword
+                          ? Icon(Icons.visibility_off)
+                          : Icon(Icons.visibility),
+                    ),
                   ),
                 ),
                 validator: (value) {
@@ -76,6 +140,9 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
               TextFormField(
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
+                onTapOutside: (event) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
+                onFieldSubmitted: (value) async => await _changeUserPassword(),
                 decoration: InputDecoration(
                   hintText: "Nhập lại mật khẩu mới",
                   prefixIcon: Icon(Icons.lock),
@@ -102,78 +169,7 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
               const SizedBox(height: 30),
 
               ElevatedButton(
-                onPressed: _isLoading
-                    ? () {}
-                    : () async {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                          try {
-                            await SupabaseAccountController.updateUserPassword(
-                              _passwordController.text,
-                            );
-                            if (mounted) {
-                              showDialog(
-                                context: context,
-                                builder: (dialogContext) => AlertDialog(
-                                  title: const Text("Đổi mật khẩu thành công"),
-                                  content: const Text(
-                                    "Bạn đã đổi mật khẩu thành công",
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(dialogContext).pop();
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("OK"),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          } on AuthException catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Center(
-                                    child: Text(
-                                      SupabaseAccountController
-                                              .loginErrorCodeMap[e.code] ??
-                                          e.message,
-                                    ),
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: const EdgeInsets.only(
-                                    bottom: 40,
-                                    left: 20,
-                                    right: 20,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    "Lỗi hệ thống. Vui lòng thử lại",
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                          finally {
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          }
-                        }
-                      },
+                onPressed: _isLoading ? () {} : () async {},
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text("Đổi mật khẩu"),

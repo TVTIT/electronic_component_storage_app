@@ -54,6 +54,7 @@ class _LogoutButtonState extends State<LogoutButton> {
         await _logout();
       },
       style: ElevatedButton.styleFrom(
+        minimumSize: const Size.fromHeight(50),
         foregroundColor: const Color.fromARGB(255, 172, 74, 67),
       ),
       icon: Icon(Icons.logout),

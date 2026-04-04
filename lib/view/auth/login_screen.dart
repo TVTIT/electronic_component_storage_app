@@ -26,43 +26,46 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   Future<void> _signIn() async {
-    setState(() => _isLoading = true);
-    try {
-      // Gọi API đăng nhập thuần của Supabase
-      await Supabase.instance.client.auth.signInWithPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      try {
+        // Gọi API đăng nhập thuần của Supabase
+        await Supabase.instance.client.auth.signInWithPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Đăng nhập thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text("Đăng nhập thành công")),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              duration: const Duration(milliseconds: 1500),
             ),
-            duration: const Duration(milliseconds: 1500),
-          ),
-        );
-      }
-    } on AuthException catch (e) {
-      if (mounted) {
-        setState(() {
-          _loginErrorText =
-              SupabaseAccountController.loginErrorCodeMap[e.code] ?? e.message;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Lỗi hệ thống. Vui lòng thử lại')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
+          );
+        }
+      } on AuthException catch (e) {
+        if (mounted) {
+          setState(() {
+            _loginErrorText =
+                SupabaseAccountController.loginErrorCodeMap[e.code] ??
+                e.message;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Lỗi hệ thống. Vui lòng thử lại')),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
       }
     }
   }
@@ -97,99 +100,99 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Đăng nhập")),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Image.asset('assets/logo2_transparent.png', height: 200),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  hintText: "Nhập email",
-                  prefixIcon: Icon(Icons.email),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(15.0),
+          children: [
+            Image.asset('assets/logo2_transparent.png', height: 200),
+            SizedBox(height: 20),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                labelText: "Email",
+                hintText: "Nhập email",
+                prefixIcon: Icon(Icons.email),
+              ),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              textInputAction: TextInputAction.next,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Email không được bỏ trống";
+                }
+                if (!RegExp(
+                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                ).hasMatch(value)) {
+                  return 'Email không hợp lệ';
+                }
+                return null;
+              },
+            ),
+
+            const SizedBox(height: 10),
+
+            TextFormField(
+              controller: _passwordController,
+              obscureText: _obscurePassword,
+              decoration: InputDecoration(
+                labelText: "Mật khẩu",
+                hintText: "Nhập mật khẩu",
+                prefixIcon: Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  }),
+                  icon: _obscurePassword
+                      ? Icon(Icons.visibility_off)
+                      : Icon(Icons.visibility),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Email không được bỏ trống";
-                  }
-                  if (!RegExp(
-                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                  ).hasMatch(value)) {
-                    return 'Email không hợp lệ';
-                  }
-                  return null;
+              ),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              onFieldSubmitted: (value) async => await _signIn(),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Mật khẩu không được bỏ trống';
+                }
+                return null;
+              },
+            ),
+
+            //const SizedBox(height: 5,),
+            Align(
+              alignment: Alignment.topRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/forgot-password');
                 },
+                child: Text('Quên mật khẩu?'),
               ),
+            ),
 
-              const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
-              TextFormField(
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  labelText: "Mật khẩu",
-                  hintText: "Nhập mật khẩu",
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    onPressed: () => setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    }),
-                    icon: _obscurePassword
-                        ? Icon(Icons.visibility_off)
-                        : Icon(Icons.visibility),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Mật khẩu không được bỏ trống';
-                  }
-                  return null;
-                },
+            ElevatedButton(
+              onPressed: _isLoading
+                  ? () {}
+                  : () async {
+                      await _signIn();
+                    },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(50),
               ),
+              child: _isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Đăng nhập'),
+            ),
 
-              //const SizedBox(height: 5,),
-              Align(
-                alignment: Alignment.topRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/forgot-password');
-                  },
-                  child: Text('Quên mật khẩu?'),
-                ),
-              ),
+            const SizedBox(height: 50),
 
-              const SizedBox(height: 20),
-
-              ElevatedButton(
-                onPressed: _isLoading
-                    ? () {}
-                    : () async {
-                        if (_formKey.currentState!.validate()) {
-                          await _signIn();
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('Đăng nhập'),
-              ),
-
-              const SizedBox(height: 50),
-
-              Center(
-                child: Text(
-                  _loginErrorText,
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ),
+            Center(
+              child: Text(_loginErrorText, style: TextStyle(color: Colors.red)),
+            ),
+          ],
         ),
       ),
     );

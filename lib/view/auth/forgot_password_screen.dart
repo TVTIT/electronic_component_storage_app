@@ -45,6 +45,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             children: [
               TextFormField(
                 controller: _emailController,
+                onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
                 decoration: InputDecoration(
                   labelText: "Email",
                   hintText: "Nhập email",
