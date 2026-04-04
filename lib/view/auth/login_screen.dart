@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              Image.asset('assets/logo_transparent.png', height: 200),
+              Image.asset('assets/logo2_transparent.png', height: 200),
               SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
