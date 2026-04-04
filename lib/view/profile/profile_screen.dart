@@ -1,5 +1,6 @@
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/profile/change_user_password_screen.dart';
 import 'package:electronic_component_storage_app/view/profile/editable_user_display_name.dart';
 import 'package:electronic_component_storage_app/view/profile/logout_button.dart';
@@ -14,23 +15,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userID = SupabaseAccountController.userID();
     return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Icon(Icons.person, color: AppColor.primaryColor, size: 28),
-
-            SizedBox(width: 15),
-
-            Text(
-              "Tài khoản",
-              style: TextStyle(
-                color: AppColor.primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: MyAppBar(icon: Icon(Icons.person), title: "Tài khoản"),
       body: ListView(
         padding: EdgeInsets.all(15.0),
         children: [
