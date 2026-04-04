@@ -6,47 +6,6 @@ import 'package:electronic_component_storage_app/view/storage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   int _currentStack = 0;
-
-//   final List<Widget> indexedStackChildren = [
-//     const DashboardScreen(),
-//     const StorageScreen(),
-//     const AddComponentScreen(),
-//     const NotificationScreen(),
-//     const SettingScreen()
-//   ];
-
-//   final List<BottomNavigationBarItem> bottomItems = [
-//     const BottomNavigationBarItem(
-//       icon: Icon(Icons.dashboard),
-//       label: 'Dashboard',
-//     ),
-//     const BottomNavigationBarItem(
-//       icon: Icon(Icons.inventory),
-//       label: 'Tài khoản',
-//     ),
-//     const BottomNavigationBarItem(
-//       icon: Icon(Icons.add),
-
-//     )
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: ,
-//     );
-//   }
-// }
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -100,9 +59,6 @@ class HomeScreen extends StatelessWidget {
 
       navBarBuilder: (navBarConfig) => Style14BottomNavBar(
         navBarConfig: navBarConfig,
-        navBarDecoration: NavBarDecoration(
-          padding: EdgeInsets.only(bottom: 10),
-        ),
       ),
     );
   }
