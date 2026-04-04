@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/auth/forgot_password_screen.dart';
 import 'package:electronic_component_storage_app/view/home_screen.dart';
 import 'package:electronic_component_storage_app/view/auth/login_screen.dart';
@@ -28,7 +29,9 @@ class MyApp extends StatelessWidget {
       title: "Quản lý linh kiện điện tử",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0x00006064)),
+        scaffoldBackgroundColor: AppColor.surfaceColor,
         textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: AppColor.onSurfaceColor,
           fontSizeDelta: 1.0,
         )
       ),

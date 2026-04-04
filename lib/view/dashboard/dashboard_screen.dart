@@ -12,7 +12,6 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final userName = SupabaseAccountController.userName();
     return Scaffold(
-      backgroundColor: AppColor.surfaceColor,
       appBar: AppBar(
         title: const Row(
           children: [
