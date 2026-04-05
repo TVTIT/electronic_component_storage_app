@@ -114,20 +114,15 @@ class RestockItemsWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColor.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
+        Column(
             children: [
               _buildRestockItem(
                 icon: Icons.memory,
                 name: "Capacitor 100uF",
                 status: "2 / 50 LEFT",
-                bgColor: AppColor.surfaceContainerLowest,
+                bgColor: AppColor.surfaceContainerLow,
               ),
-              Divider(height: 1, color: AppColor.outlineVariant.withValues(alpha: 0.2)),
+              const SizedBox(height: 5,),
               _buildRestockItem(
                 icon: Icons.settings_input_component,
                 name: "LM741 Op-Amp",
@@ -136,7 +131,6 @@ class RestockItemsWidget extends StatelessWidget {
               ),
             ],
           ),
-        ),
       ],
     );
   }

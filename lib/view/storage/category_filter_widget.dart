@@ -37,7 +37,7 @@ class _CategoryFilterWidgetState extends State<CategoryFilterWidget> {
     bool isSelected = key == _selectedKey;
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: GestureDetector(
         onTap: () {
           setState(() {

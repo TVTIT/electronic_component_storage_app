@@ -20,7 +20,7 @@ class _StorageScreenState extends State<StorageScreen> {
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: Column(
           children: [
             TextField(
@@ -28,7 +28,7 @@ class _StorageScreenState extends State<StorageScreen> {
                 hintText: "Tìm kiếm linh kiện...",
                 border: OutlineInputBorder( //Dùng outline cho to hơn
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide.none
                 ),
                 prefixIcon: Icon(
                   Icons.search,
@@ -58,7 +58,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   : SizedBox.shrink(),
             ),
 
-            SizedBox(height: 20),
+            SizedBox(height: 10),
 
             Expanded(
               child: ListView.builder(

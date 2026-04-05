@@ -17,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.person), title: "Tài khoản"),
       body: ListView(
-        padding: EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(15.0),
         children: [
           const SizedBox(
             height: 120,
@@ -87,6 +87,7 @@ class ProfileScreen extends StatelessWidget {
 
           TextFormField(
             readOnly: true,
+            textAlignVertical: TextAlignVertical.center,
             initialValue: userID,
             decoration: InputDecoration(
               suffixIcon: IconButton(

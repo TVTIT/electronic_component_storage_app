@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           children: [
             Image.asset('assets/logo2_transparent.png', height: 200),
             SizedBox(height: 20),
@@ -115,6 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 labelText: "Email",
                 hintText: "Nhập email",
                 prefixIcon: Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide()
+                )
               ),
               onTapOutside: (event) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
@@ -149,6 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? Icon(Icons.visibility_off)
                       : Icon(Icons.visibility),
                 ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide()
+                )
               ),
               onTapOutside: (event) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
