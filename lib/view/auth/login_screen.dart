@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/view/home_screen.dart';
+import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -99,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Đăng nhập")),
+      appBar: MyAppBar(title: "Đăng nhập"),
       body: Form(
         key: _formKey,
         child: ListView(
