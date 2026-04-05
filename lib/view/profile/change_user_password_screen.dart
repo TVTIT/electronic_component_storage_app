@@ -169,7 +169,7 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
               const SizedBox(height: 30),
 
               ElevatedButton(
-                onPressed: _isLoading ? () {} : () async {},
+                onPressed: _isLoading ? () {} : () async => _changeUserPassword(),
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text("Đổi mật khẩu"),
