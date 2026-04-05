@@ -33,6 +33,14 @@ class MyApp extends StatelessWidget {
         textTheme: Theme.of(context).textTheme.apply(
           bodyColor: AppColor.onSurfaceColor,
           fontSizeDelta: 1.0,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: AppColor.greyInputColor,
+          border: UnderlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none
+          ),
         )
       ),
       debugShowCheckedModeBanner: false,

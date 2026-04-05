@@ -46,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
             initialValue: "Người dùng", //TODO: thêm hàm lấy userRole
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
 
           const Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
 
@@ -55,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
             initialValue: SupabaseAccountController.userEmail(),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
 
           const Text('Mật khẩu', style: TextStyle(fontWeight: FontWeight.bold)),
 
@@ -78,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 15),
 
           const Text(
             'ID người dùng',

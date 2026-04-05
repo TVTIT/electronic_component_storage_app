@@ -26,9 +26,7 @@ class _StorageScreenState extends State<StorageScreen> {
             TextField(
               decoration: InputDecoration(
                 hintText: "Tìm kiếm linh kiện...",
-                filled: true,
-                fillColor: AppColor.greyInputColor,
-                border: OutlineInputBorder(
+                border: OutlineInputBorder( //Dùng outline cho to hơn
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
