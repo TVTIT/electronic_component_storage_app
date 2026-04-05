@@ -2,7 +2,7 @@ import 'package:electronic_component_storage_app/view/add_component_screen.dart'
 import 'package:electronic_component_storage_app/view/dashboard/dashboard_screen.dart';
 import 'package:electronic_component_storage_app/view/notification_screen.dart';
 import 'package:electronic_component_storage_app/view/profile/profile_screen.dart';
-import 'package:electronic_component_storage_app/view/storage_screen.dart';
+import 'package:electronic_component_storage_app/view/storage/storage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
