@@ -44,51 +44,54 @@ class _StorageScreenState extends State<StorageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Tìm kiếm linh kiện...",
-                border: OutlineInputBorder(
-                  //Dùng outline cho to hơn
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: AppColor.onGreyInputColor,
-                ),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _showCategoryFilter = !_showCategoryFilter;
-                    });
-                  },
-                  icon: Icon(Icons.tune, color: AppColor.onGreyInputColor),
-                ),
-              ),
-              onTapOutside: (event) =>
-                  FocusManager.instance.primaryFocus?.unfocus(),
-            ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Tìm kiếm linh kiện...",
+                      border: OutlineInputBorder(
+                        //Dùng outline cho to hơn
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: AppColor.onGreyInputColor,
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _showCategoryFilter = !_showCategoryFilter;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.tune,
+                          color: AppColor.onGreyInputColor,
+                        ),
+                      ),
+                    ),
+                    onTapOutside: (event) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                  ),
 
-            const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-            AnimatedSize(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.fastOutSlowIn,
-              alignment: Alignment.topCenter,
-              child: _showCategoryFilter
-                  ? CategoryFilterWidget()
-                  : SizedBox.shrink(),
-            ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.fastOutSlowIn,
+                    alignment: Alignment.topCenter,
+                    child: _showCategoryFilter
+                        ? CategoryFilterWidget()
+                        : SizedBox.shrink(),
+                  ),
 
-            SizedBox(height: 10),
+                  SizedBox(height: 10),
 
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : Expanded(
+                  Expanded(
                     child: ListView.builder(
                       itemCount: _listComponent.length,
                       itemBuilder: (context, index) {
@@ -98,9 +101,9 @@ class _StorageScreenState extends State<StorageScreen> {
                       },
                     ),
                   ),
-          ],
-        ),
-      ),
+                ],
+              ),
+            ),
     );
   }
 }

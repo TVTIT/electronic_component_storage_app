@@ -1,3 +1,4 @@
+import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/Component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
@@ -10,24 +11,20 @@ class CategoryFilterWidget extends StatefulWidget {
 }
 
 class _CategoryFilterWidgetState extends State<CategoryFilterWidget> {
-  final List<String> _categories = [
-    'Tất cả',
-    'IC',
-    'Điện trở',
-    'Tụ điện',
-    'Cuộn cảm',
-    'Cảm biến',
-    'Khác',
-  ];
-  String _selectedKey = Component.categoryMap.keys.first;
+  String _selectedKey = "all";
 
   @override
   Widget build(BuildContext context) {
+    final categoryMap = SupabaseDatabaseController.categoryMapCached;
+    final Map categoryMapWithAll = {
+      'all': {'name': "Tất cả"},
+      ...categoryMap,
+    };
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: Component.categoryMap.entries
-            .map((entry) => _buildFilterItem(entry.key, entry.value))
+        children: categoryMapWithAll.entries
+            .map((entry) => _buildFilterItem(entry.key, entry.value['name']))
             .toList(),
       ),
     );

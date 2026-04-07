@@ -28,16 +28,6 @@ class Component {
   String categoryID;
 
   //static const minThreshold = 10;
-
-  static const Map<String, String> categoryMap = {
-    "resistor": "Điện trở",
-    "capacitor": "Tụ điện",
-    "conductor": "Cuộn cảm",
-    "sensor": "Cảm biến",
-    "ic": "IC",
-    "unknown": "Khác",
-  };
-
   static final DateTime _defaultTime = DateTime(2000);
 
   bool get isLowStock => quantity < minThreshold;

@@ -49,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                 SupabaseAccountController
                     .userRoleMap
                     .values
-                    .first, //TODO: thêm hàm lấy userRole
+                    .first,
           ),
 
           const SizedBox(height: 15),
