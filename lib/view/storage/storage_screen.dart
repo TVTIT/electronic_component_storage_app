@@ -15,8 +15,6 @@ class StorageScreen extends StatefulWidget {
 
 class _StorageScreenState extends State<StorageScreen> {
   List<Component> _listComponent = [];
-  Map<String, dynamic> _categoryMap = {};
-  Map<String, dynamic> _locationMap = {};
 
   bool _isLoading = true;
 
@@ -27,8 +25,8 @@ class _StorageScreenState extends State<StorageScreen> {
       _isLoading = true;
     });
     _listComponent = await SupabaseDatabaseController.getAllComponent();
-    _categoryMap = await SupabaseDatabaseController.getAllCategory();
-    _locationMap = await SupabaseDatabaseController.getAllLocation();
+    await SupabaseDatabaseController.getAllCategory();
+    await SupabaseDatabaseController.getAllLocation();
     setState(() {
       _isLoading = false;
     });
