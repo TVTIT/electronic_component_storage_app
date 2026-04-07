@@ -19,22 +19,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  late final StreamSubscription<AuthState> _authSubscription;
-
   String _loginErrorText = "";
 
-  bool _isLoading = false;
+  bool _isLoggingIn = false;
+  bool _isLoadingData = true;
   bool _obscurePassword = true;
 
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+      setState(() => _isLoggingIn = true);
       try {
         // Gọi API đăng nhập thuần của Supabase
         await Supabase.instance.client.auth.signInWithPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+
+        await _getDataAndNavigateHome();
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -60,45 +61,91 @@ class _LoginScreenState extends State<LoginScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Lỗi hệ thống. Vui lòng thử lại')),
+            SnackBar(content: Text('Lỗi hệ thống: $e')),
           );
         }
       } finally {
         if (mounted) {
-          setState(() => _isLoading = false);
+          setState(() => _isLoggingIn = false);
         }
       }
     }
   }
 
-  void _setupAuthListener() {
-    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
-      data,
-    ) {
-      if (data.session != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            Navigator.pushReplacementNamed(context, '/home');
-          }
-        });
+  Future<void> _checkLoggedIn() async {
+    setState(() {
+      _isLoadingData = true;
+    });
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null && !session.isExpired) {
+      try {
+        await Supabase.instance.client.auth.getUser();
+        await _getDataAndNavigateHome();
+      } on AuthException catch (e) {
+        await Supabase.instance.client.auth.signOut();
+        if (mounted) {
+          setState(() {
+            _isLoadingData = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(
+                child: Text(
+                  "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại",
+                ),
+              ),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoadingData = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Lỗi hệ thống. Vui lòng thử lại"),
+            ),
+          );
+        }
+      }
+    } else {
+      setState(() {
+        _isLoadingData = false;
+      });
+    }
+  }
+
+  Future<void> _getDataAndNavigateHome() async {
+    await SupabaseAccountController.userRole();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
       }
     });
   }
 
   @override
   void initState() {
-    _setupAuthListener();
+    _checkLoggedIn();
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _authSubscription.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoadingData) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       appBar: MyAppBar(title: "Đăng nhập"),
       body: Form(
@@ -115,9 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 labelText: "Email",
                 hintText: "Nhập email",
                 prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide()
-                )
+                border: OutlineInputBorder(borderSide: BorderSide()),
               ),
               onTapOutside: (event) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
@@ -152,9 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? Icon(Icons.visibility_off)
                       : Icon(Icons.visibility),
                 ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide()
-                )
+                border: OutlineInputBorder(borderSide: BorderSide()),
               ),
               onTapOutside: (event) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
@@ -181,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
 
             ElevatedButton(
-              onPressed: _isLoading
+              onPressed: _isLoggingIn
                   ? () {}
                   : () async {
                       await _signIn();
@@ -189,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: _isLoading
+              child: _isLoggingIn
                   ? const CircularProgressIndicator()
                   : const Text('Đăng nhập'),
             ),

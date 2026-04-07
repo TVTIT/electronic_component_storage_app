@@ -1,3 +1,4 @@
+import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,15 @@ class ComponentInfoCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildInfoBlock(
-                  label: "Phân loại: ${Component.categoryMap[component.category] ?? "Khác"}",
-                  value: component.name,
+                Expanded(
+                  child: _buildInfoBlock(
+                    label:
+                        "Phân loại: ${SupabaseDatabaseController.categoryMapCached[component.categoryID]['name'] ?? "Khác"}",
+                    value: component.name,
+                  ),
                 ),
-                _buildWarningBadge(),
+                const SizedBox(width: 60,),
+                _buildWarningBadge()
               ],
             ),
 
@@ -32,12 +37,20 @@ class ComponentInfoCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildInfoBlock(label: "Vị trí", value: component.location),
+                _buildInfoBlock(
+                  label: "Vị trí",
+                  value:
+                      SupabaseDatabaseController.locationMapCached[component
+                          .locationID]['name'] ??
+                      "Không rõ",
+                ),
                 _buildInfoBlock(
                   label: "Số lượng",
                   value: component.quantity.toString(),
                   valueSize: 32,
-                  valueColor: component.isLowStock ? AppColor.errorColor: AppColor.greenSafeColor,
+                  valueColor: component.isLowStock
+                      ? AppColor.errorColor
+                      : AppColor.greenSafeColor,
                   alignment: CrossAxisAlignment.end,
                 ),
               ],
@@ -90,8 +103,7 @@ class ComponentInfoCard extends StatelessWidget {
       text = "Hết hàng";
       backgroundColor = AppColor.errorColor;
       foregroundColor = Colors.white;
-    }
-    else {
+    } else {
       text = "Còn ít";
       backgroundColor = AppColor.warningColor;
       foregroundColor = AppColor.onWarningColorLow;

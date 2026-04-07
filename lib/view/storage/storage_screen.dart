@@ -1,3 +1,4 @@
+import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
@@ -13,7 +14,31 @@ class StorageScreen extends StatefulWidget {
 }
 
 class _StorageScreenState extends State<StorageScreen> {
+  List<Component> _listComponent = [];
+  Map<String, dynamic> _categoryMap = {};
+  Map<String, dynamic> _locationMap = {};
+
+  bool _isLoading = true;
+
   bool _showCategoryFilter = true;
+
+  Future<void> _getDataRequired() async {
+    setState(() {
+      _isLoading = true;
+    });
+    _listComponent = await SupabaseDatabaseController.getAllComponent();
+    _categoryMap = await SupabaseDatabaseController.getAllCategory();
+    _locationMap = await SupabaseDatabaseController.getAllLocation();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    _getDataRequired();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +51,10 @@ class _StorageScreenState extends State<StorageScreen> {
             TextField(
               decoration: InputDecoration(
                 hintText: "Tìm kiếm linh kiện...",
-                border: OutlineInputBorder( //Dùng outline cho to hơn
+                border: OutlineInputBorder(
+                  //Dùng outline cho to hơn
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none
+                  borderSide: BorderSide.none,
                 ),
                 prefixIcon: Icon(
                   Icons.search,
@@ -60,14 +86,18 @@ class _StorageScreenState extends State<StorageScreen> {
 
             SizedBox(height: 10),
 
-            Expanded(
-              child: ListView.builder(
-                itemCount: Component.listComponentTest.length,
-                itemBuilder: (context, index) {
-                  return ComponentInfoCard(component: Component.listComponentTest[index]);
-                },
-              ),
-            ),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: _listComponent.length,
+                      itemBuilder: (context, index) {
+                        return ComponentInfoCard(
+                          component: _listComponent[index],
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ),
