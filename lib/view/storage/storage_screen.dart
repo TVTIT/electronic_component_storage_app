@@ -15,6 +15,7 @@ class StorageScreen extends StatefulWidget {
 
 class _StorageScreenState extends State<StorageScreen> {
   List<Component> _listComponent = [];
+  String _categorySelected = "all";
 
   bool _isLoading = true;
 
@@ -40,6 +41,11 @@ class _StorageScreenState extends State<StorageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Component> displayList = _categorySelected == "all"
+        ? _listComponent
+        : _listComponent
+              .where((item) => item.categoryID == _categorySelected)
+              .toList();
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
       body: _isLoading
@@ -83,7 +89,9 @@ class _StorageScreenState extends State<StorageScreen> {
                     curve: Curves.fastOutSlowIn,
                     alignment: Alignment.topCenter,
                     child: _showCategoryFilter
-                        ? CategoryFilterWidget()
+                        ? CategoryFilterWidget(onCategoryChanged: (newKey) => setState(() {
+                          _categorySelected = newKey;
+                        }))
                         : SizedBox.shrink(),
                   ),
 
@@ -91,10 +99,10 @@ class _StorageScreenState extends State<StorageScreen> {
 
                   Expanded(
                     child: ListView.builder(
-                      itemCount: _listComponent.length,
+                      itemCount: displayList.length,
                       itemBuilder: (context, index) {
                         return ComponentInfoCard(
-                          component: _listComponent[index],
+                          component: displayList[index],
                         );
                       },
                     ),

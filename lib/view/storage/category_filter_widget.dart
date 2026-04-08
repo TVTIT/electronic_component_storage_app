@@ -4,7 +4,8 @@ import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 
 class CategoryFilterWidget extends StatefulWidget {
-  const CategoryFilterWidget({super.key});
+  const CategoryFilterWidget({super.key, required this.onCategoryChanged});
+  final Function(String) onCategoryChanged;
 
   @override
   State<CategoryFilterWidget> createState() => _CategoryFilterWidgetState();
@@ -39,6 +40,7 @@ class _CategoryFilterWidgetState extends State<CategoryFilterWidget> {
         onTap: () {
           setState(() {
             _selectedKey = key;
+            widget.onCategoryChanged(key);
           });
         },
         child: AnimatedContainer(
