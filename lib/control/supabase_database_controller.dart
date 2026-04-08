@@ -48,4 +48,10 @@ class SupabaseDatabaseController {
     locationMapCached = normalizeData(listMap);
     return locationMapCached;
   }
+
+  static Future<void> getInitialData() async {
+    await SupabaseDatabaseController.getAllComponent();
+    await SupabaseDatabaseController.getAllLocation();
+    await SupabaseDatabaseController.getAllCategory();
+  }
 }
