@@ -15,80 +15,85 @@ class StorageScreen extends StatefulWidget {
 }
 
 class _StorageScreenState extends State<StorageScreen> {
-  List<Component> _listComponent = SupabaseDatabaseController.listComponentCached;
   String _categorySelected = "all";
 
   bool _showCategoryFilter = true;
 
   @override
   Widget build(BuildContext context) {
-    List<Component> displayList = _categorySelected == "all"
-        ? _listComponent
-        : _listComponent
+    List<Component> listComponent =
+        SupabaseDatabaseController.listComponentCached;
+    List<Component> displayList =
+        _categorySelected == "all"
+        ? listComponent
+        : listComponent
               .where((item) => item.categoryID == _categorySelected)
               .toList();
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
       body: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: "Tìm kiếm linh kiện...",
-                      border: OutlineInputBorder(
-                        //Dùng outline cho to hơn
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: AppColor.onGreyInputColor,
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _showCategoryFilter = !_showCategoryFilter;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.tune,
-                          color: AppColor.onGreyInputColor,
-                        ),
-                      ),
-                    ),
-                    onTapOutside: (event) =>
-                        FocusManager.instance.primaryFocus?.unfocus(),
-                  ),
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                hintText: "Tìm kiếm linh kiện...",
+                border: OutlineInputBorder(
+                  //Dùng outline cho to hơn
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: AppColor.onGreyInputColor,
+                ),
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _showCategoryFilter = !_showCategoryFilter;
+                    });
+                  },
+                  icon: Icon(Icons.tune, color: AppColor.onGreyInputColor),
+                ),
+              ),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+            ),
 
-                  const SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.fastOutSlowIn,
-                    alignment: Alignment.topCenter,
-                    child: _showCategoryFilter
-                        ? CategoryFilterWidget(onCategoryChanged: (newKey) => setState(() {
-                          _categorySelected = newKey;
-                        }))
-                        : SizedBox.shrink(),
-                  ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.fastOutSlowIn,
+              alignment: Alignment.topCenter,
+              child: _showCategoryFilter
+                  ? CategoryFilterWidget(
+                      onCategoryChanged: (newKey) => setState(() {
+                        _categorySelected = newKey;
+                      }),
+                    )
+                  : SizedBox.shrink(),
+            ),
 
-                  SizedBox(height: 10),
+            SizedBox(height: 10),
 
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: displayList.length,
-                      itemBuilder: (context, index) {
-                        return ComponentInfoCard(
-                          component: displayList[index],
-                        );
-                      },
-                    ),
-                  ),
-                ],
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await SupabaseDatabaseController.getInitialData();
+                  setState(() {});
+                },
+                child: ListView.builder(
+                  itemCount: displayList.length,
+                  itemBuilder: (context, index) {
+                    return ComponentInfoCard(component: displayList[index]);
+                  },
+                ),
               ),
             ),
+          ],
+        ),
+      ),
     );
   }
 }

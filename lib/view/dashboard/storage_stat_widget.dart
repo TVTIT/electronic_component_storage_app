@@ -1,11 +1,30 @@
+import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 
 class StorageStatWidget extends StatelessWidget {
   const StorageStatWidget({super.key});
 
+  Map<String, int> _componentQuanity() {
+    List<Component> listComonent =
+        SupabaseDatabaseController.listComponentCached;
+    Map<String, int> result = {'all': listComonent.length};
+
+    int restockQuanity = listComonent.where((item) => item.isLowStock).length;
+    int outOfStockQuanity = listComonent
+        .where((item) => item.quantity == 0)
+        .length;
+
+    result['restock'] = restockQuanity;
+    result['out_of_stock'] = outOfStockQuanity;
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
+    Map<String, int> componentQuanityMap = _componentQuanity();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       clipBehavior: Clip.none,
@@ -16,7 +35,7 @@ class StorageStatWidget extends StatelessWidget {
             icon: Icons.storage,
             iconColor: AppColor.onPrimaryContainer,
             label: "Tổng số linh kiện",
-            value: "1,248",
+            value: "${componentQuanityMap['all']}",
             valueColor: Colors.white,
             badgeColor: AppColor.onPrimaryContainer.withValues(alpha: 0.8),
           ),
@@ -26,7 +45,7 @@ class StorageStatWidget extends StatelessWidget {
             icon: Icons.warning_amber_rounded,
             iconColor: AppColor.errorColor,
             label: "Linh kiện còn ít",
-            value: "14",
+            value: "${componentQuanityMap['restock']}",
             valueColor: AppColor.onSurfaceColor,
             badgeColor: const Color(0xFF3F4949),
             borderColor: AppColor.outlineVariant.withValues(alpha: 0.5),
@@ -37,7 +56,7 @@ class StorageStatWidget extends StatelessWidget {
             icon: Icons.error_outline,
             iconColor: Colors.white,
             label: "Linh kiện đã hết",
-            value: "03",
+            value: "${componentQuanityMap['out_of_stock']}",
             valueColor: Colors.white,
             badgeColor: AppColor.onTertiaryContainer,
           ),
