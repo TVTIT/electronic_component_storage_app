@@ -1,3 +1,5 @@
+import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -5,15 +7,15 @@ class RestockItemsWidget extends StatelessWidget {
   const RestockItemsWidget({super.key});
 
   Widget _buildRestockItem({
-    required IconData icon,
+    required String iconUrl,
     required String name,
-    required String status,
-    required Color bgColor,
+    required int quanity,
   }) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: AppColor.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -22,13 +24,14 @@ class RestockItemsWidget extends StatelessWidget {
           Row(
             children: [
               Container(
+                padding: const EdgeInsets.all(7),
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
                   color: const Color(0xFFEDEEEF),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: const Color(0xFF556474)),
+                child: Image.network(iconUrl),
               ),
               const SizedBox(width: 16),
               Column(
@@ -43,7 +46,7 @@ class RestockItemsWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    status,
+                    quanity == 0 ? "Hết hàng" : "Còn lại $quanity sản phẩm",
                     style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -72,6 +75,13 @@ class RestockItemsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Component> displayList = SupabaseDatabaseController.listComponentCached
+        .where((item) => item.isLowStock)
+        .take(2)
+        .toList();
+    if (displayList.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -102,7 +112,7 @@ class RestockItemsWidget extends StatelessWidget {
             TextButton(
               onPressed: () {},
               child: const Text(
-                "VIEW ALL",
+                "XEM TẤT CẢ",
                 style: TextStyle(
                   color: AppColor.primaryColor,
                   fontSize: 12,
@@ -115,22 +125,17 @@ class RestockItemsWidget extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Column(
-            children: [
-              _buildRestockItem(
-                icon: Icons.memory,
-                name: "Capacitor 100uF",
-                status: "2 / 50 LEFT",
-                bgColor: AppColor.surfaceContainerLow,
-              ),
-              const SizedBox(height: 5,),
-              _buildRestockItem(
-                icon: Icons.settings_input_component,
-                name: "LM741 Op-Amp",
-                status: "5 / 20 LEFT",
-                bgColor: AppColor.surfaceContainerLow,
-              ),
-            ],
-          ),
+          children: displayList
+              .map(
+                (component) => _buildRestockItem(
+                  iconUrl: SupabaseDatabaseController
+                      .categoryMapCached[component.categoryID]['image_url'],
+                  name: component.name,
+                  quanity: component.quantity,
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
   }
