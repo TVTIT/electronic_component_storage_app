@@ -21,42 +21,42 @@ class RestockItemsWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(7),
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFEDEEEF),
-                  borderRadius: BorderRadius.circular(10),
+          Container(
+            padding: const EdgeInsets.all(7),
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEDEEEF),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Image.network(iconUrl),
+          ),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.onSurfaceColor,
+                  ),
                 ),
-                child: Image.network(iconUrl),
-              ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.onSurfaceColor,
-                    ),
+                const SizedBox(height: 2),
+                Text(
+                  quanity == 0 ? "Hết hàng" : "Còn lại $quanity sản phẩm",
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.errorColor,
+                    letterSpacing: 1.2,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    quanity == 0 ? "Hết hàng" : "Còn lại $quanity sản phẩm",
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.errorColor,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
           IconButton(
             onPressed: () {},
