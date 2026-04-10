@@ -12,6 +12,11 @@ class ComponentInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
+      elevation: 0,
+      color: AppColor.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
