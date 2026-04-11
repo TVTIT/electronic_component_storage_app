@@ -1,3 +1,5 @@
+import 'package:electronic_component_storage_app/string_extension.dart';
+
 class Component {
   Component({
     required this.id,
@@ -12,11 +14,12 @@ class Component {
     required this.createdAt,
     required this.updatedAt,
     required this.categoryID,
-  });
+  }) : searchName = name.toLowerCase().toUnaccented().trim();
 
   String id;
   String partNumber;
   String name;
+  String searchName;
   int quantity;
   int minThreshold = 10;
   String locationID;
