@@ -95,6 +95,14 @@ class _StorageScreenState extends State<StorageScreen> {
                   });
                 });
               },
+              onFieldSubmitted: (value) {
+                if (_searchDebounce?.isActive ?? false) {
+                  _searchDebounce!.cancel();
+                }
+                setState(() {
+                  _displayList = _searchComponent(_searchController.text);
+                });
+              },
             ),
 
             const SizedBox(height: 10),
