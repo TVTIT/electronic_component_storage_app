@@ -61,9 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Lỗi hệ thống: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Lỗi hệ thống: $e')));
         }
       } finally {
         if (mounted) {
@@ -77,17 +77,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoadingData = true;
     });
-    final session = Supabase.instance.client.auth.currentSession;
-    if (session != null && !session.isExpired) {
-      try {
-        await Supabase.instance.client.auth.getUser();
-        await _getDataAndNavigateHome();
-      } on AuthException catch (e) {
-        await Supabase.instance.client.auth.signOut();
-        if (mounted) {
-          setState(() {
-            _isLoadingData = false;
-          });
+    try {
+      await Supabase.instance.client.auth.refreshSession();
+      await Supabase.instance.client.auth.getUser();
+      await _getDataAndNavigateHome();
+    } on AuthException catch (e) {
+      if (mounted) {
+        final session = Supabase.instance.client.auth.currentSession;
+        if (session != null) {
+          await Supabase.instance.client.auth.signOut();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Center(
@@ -103,22 +101,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
-      } catch (e) {
-        if (mounted) {
-          setState(() {
-            _isLoadingData = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Lỗi hệ thống. Vui lòng thử lại"),
-            ),
-          );
-        }
+        setState(() {
+          _isLoadingData = false;
+        });
       }
-    } else {
-      setState(() {
-        _isLoadingData = false;
-      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoadingData = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Lỗi hệ thống. Vui lòng thử lại")),
+        );
+      }
     }
   }
 
