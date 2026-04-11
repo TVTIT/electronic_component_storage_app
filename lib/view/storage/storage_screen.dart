@@ -21,6 +21,8 @@ class _StorageScreenState extends State<StorageScreen> {
 
   bool _showCategoryFilter = true;
 
+  List<Component> _displayList = [];
+
   final _searchController = TextEditingController();
   Timer? _searchDebounce;
 
@@ -37,6 +39,12 @@ class _StorageScreenState extends State<StorageScreen> {
   }
 
   @override
+  void initState() {
+    _displayList = SupabaseDatabaseController.listComponentCached;
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _searchDebounce?.cancel();
     _searchController.dispose();
@@ -45,20 +53,6 @@ class _StorageScreenState extends State<StorageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Component> listComponent =
-        SupabaseDatabaseController.listComponentCached;
-
-    List<Component> displayList;
-    if (_searchController.text.isEmpty) {
-      displayList = _categorySelected == "all"
-          ? listComponent
-          : listComponent
-                .where((item) => item.categoryID == _categorySelected)
-                .toList();
-    } else {
-      displayList = _searchComponent(_searchController.text);
-    }
-
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
       body: Padding(
@@ -96,7 +90,9 @@ class _StorageScreenState extends State<StorageScreen> {
 
                 // Đặt timer mới, nếu sau 300ms mà không gõ thêm chữ nào thì mới chạy search
                 _searchDebounce = Timer(const Duration(milliseconds: 300), () {
-                  setState(() {});
+                  setState(() {
+                    _displayList = _searchComponent(_searchController.text);
+                  });
                 });
               },
             ),
@@ -111,6 +107,18 @@ class _StorageScreenState extends State<StorageScreen> {
                   ? CategoryFilterWidget(
                       onCategoryChanged: (newKey) => setState(() {
                         _categorySelected = newKey;
+                        if (_categorySelected == "all") {
+                          _displayList =
+                              SupabaseDatabaseController.listComponentCached;
+                        } else {
+                          _displayList = SupabaseDatabaseController
+                              .listComponentCached
+                              .where(
+                                (component) =>
+                                    component.categoryID == _categorySelected,
+                              )
+                              .toList();
+                        }
                       }),
                     )
                   : SizedBox.shrink(),
@@ -125,9 +133,9 @@ class _StorageScreenState extends State<StorageScreen> {
                   setState(() {});
                 },
                 child: ListView.builder(
-                  itemCount: displayList.length,
+                  itemCount: _displayList.length,
                   itemBuilder: (context, index) {
-                    return ComponentInfoCard(component: displayList[index]);
+                    return ComponentInfoCard(component: _displayList[index]);
                   },
                 ),
               ),
