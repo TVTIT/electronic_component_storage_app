@@ -115,7 +115,11 @@ class _StorageScreenState extends State<StorageScreen> {
                   ? CategoryFilterWidget(
                       onCategoryChanged: (newKey) => setState(() {
                         _categorySelected = newKey;
-                        if (_categorySelected == "all") {
+                        if (_searchController.text.isNotEmpty) {
+                          _displayList = _searchComponent(
+                            _searchController.text,
+                          );
+                        } else if (_categorySelected == "all") {
                           _displayList =
                               SupabaseDatabaseController.listComponentCached;
                         } else {
