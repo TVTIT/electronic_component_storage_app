@@ -78,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoadingData = true;
     });
     try {
+      await Supabase.instance.client.auth.refreshSession();
       await Supabase.instance.client.auth.getUser();
       await _getDataAndNavigateHome();
     } on AuthException catch (e) {
