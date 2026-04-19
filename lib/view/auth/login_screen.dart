@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/splash_screen.dart';
 import 'package:electronic_component_storage_app/view/home_screen.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoadingData) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      //return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const SplashScreen();
     }
     return Scaffold(
       appBar: MyAppBar(title: "Đăng nhập"),
