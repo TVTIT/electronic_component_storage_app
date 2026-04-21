@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       await Supabase.instance.client.auth.refreshSession();
-      await Supabase.instance.client.auth.getUser();
+      //await Supabase.instance.client.auth.getUser();
       await _getDataAndNavigateHome();
     } on AuthException catch (e) {
       if (mounted) {
@@ -121,11 +121,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _getDataAndNavigateHome() async {
     await SupabaseAccountController.userRole();
     await SupabaseDatabaseController.getInitialData();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    });
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/home',
+      (Route<dynamic> route) =>
+          false,
+    );
   }
 
   @override
