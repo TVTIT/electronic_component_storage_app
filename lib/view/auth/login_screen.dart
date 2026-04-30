@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/splash_screen.dart';
 import 'package:electronic_component_storage_app/view/home_screen.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       await Supabase.instance.client.auth.refreshSession();
-      await Supabase.instance.client.auth.getUser();
+      //await Supabase.instance.client.auth.getUser();
       await _getDataAndNavigateHome();
     } on AuthException catch (e) {
       if (mounted) {
@@ -120,11 +121,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _getDataAndNavigateHome() async {
     await SupabaseAccountController.userRole();
     await SupabaseDatabaseController.getInitialData();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    });
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/home',
+      (Route<dynamic> route) =>
+          false,
+    );
   }
 
   @override
@@ -141,7 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoadingData) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      //return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const SplashScreen();
     }
     return Scaffold(
       appBar: MyAppBar(title: "Đăng nhập"),
