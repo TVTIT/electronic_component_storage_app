@@ -42,7 +42,7 @@ class Component {
     DateTime updatedAt = updatedAtStr.isNotEmpty ? DateTime.parse(updatedAtStr): _defaultTime;
     return Component(
       id: data['id'] ?? "",
-      partNumber: data['partNumber'] ?? "",
+      partNumber: data['part_number'] ?? "",
       name: data['name'] ?? "",
       quantity: data['quantity'] ?? "",
       minThreshold: data['min_threshold'] ?? 10,

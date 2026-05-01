@@ -6,6 +6,7 @@ import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/storage/category_filter_widget.dart';
 import 'package:electronic_component_storage_app/view/storage/component_info_card.dart';
+import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/string_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class _StorageScreenState extends State<StorageScreen> {
   String _categorySelected = "all";
 
   bool _showCategoryFilter = true;
+  bool _isScrolling = false;
 
   List<Component> _displayList = [];
 
@@ -55,6 +57,32 @@ class _StorageScreenState extends State<StorageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
+      floatingActionButton: AnimatedOpacity(
+        opacity: _isScrolling ? 0.3 : 1,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        child: FloatingActionButton(
+          
+          backgroundColor: AppColor.primaryColor,
+          foregroundColor: AppColor.surfaceContainerLow,
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddComponentForm(),
+              ),
+            );
+            if (result == true) {
+              setState(() {
+                _searchController.clear();
+                _categorySelected = "all";
+                _displayList = SupabaseDatabaseController.listComponentCached;
+              });
+            }
+          },
+          child: const Icon(Icons.add),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: Column(
@@ -144,11 +172,25 @@ class _StorageScreenState extends State<StorageScreen> {
                   await SupabaseDatabaseController.getInitialData();
                   setState(() {});
                 },
-                child: ListView.builder(
-                  itemCount: _displayList.length,
-                  itemBuilder: (context, index) {
-                    return ComponentInfoCard(component: _displayList[index]);
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) {
+                    if (notification is ScrollStartNotification || notification is ScrollUpdateNotification) {
+                      setState(() {
+                        _isScrolling = true;
+                      });
+                    } else if (notification is ScrollEndNotification) {
+                      setState(() {
+                        _isScrolling = false;
+                      });
+                    }
+                    return false;
                   },
+                  child: ListView.builder(
+                    itemCount: _displayList.length,
+                    itemBuilder: (context, index) {
+                      return ComponentInfoCard(component: _displayList[index]);
+                    },
+                  ),
                 ),
               ),
             ),

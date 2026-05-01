@@ -1,4 +1,4 @@
-import 'package:electronic_component_storage_app/view/add_component_screen.dart';
+import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/view/dashboard/dashboard_screen.dart';
 import 'package:electronic_component_storage_app/view/notification_screen.dart';
 import 'package:electronic_component_storage_app/view/profile/profile_screen.dart';
