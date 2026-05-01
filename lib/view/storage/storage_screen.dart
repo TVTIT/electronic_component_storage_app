@@ -23,7 +23,8 @@ class _StorageScreenState extends State<StorageScreen> {
   bool _showCategoryFilter = true;
   bool _isScrolling = false;
 
-  List<Component> _displayList = [];
+  //List<Component> _displayList = [];
+  final ValueNotifier<List<Component>> _displayListNotifier = ValueNotifier([]);
 
   final _searchController = TextEditingController();
   Timer? _searchDebounce;
@@ -40,9 +41,25 @@ class _StorageScreenState extends State<StorageScreen> {
         .toList();
   }
 
+  void _chanegDisplayList() {
+    if (_searchController.text.isNotEmpty) {
+      _displayListNotifier.value = _searchComponent(_searchController.text);
+    } else {
+      if (_categorySelected == 'all') {
+        _displayListNotifier.value =
+            SupabaseDatabaseController.listComponentCached;
+      } else {
+        _displayListNotifier.value = SupabaseDatabaseController
+            .listComponentCached
+            .where((component) => component.categoryID == _categorySelected)
+            .toList();
+      }
+    }
+  }
+
   @override
   void initState() {
-    _displayList = SupabaseDatabaseController.listComponentCached;
+    _displayListNotifier.value = SupabaseDatabaseController.listComponentCached;
     super.initState();
   }
 
@@ -50,6 +67,7 @@ class _StorageScreenState extends State<StorageScreen> {
   void dispose() {
     _searchDebounce?.cancel();
     _searchController.dispose();
+    _displayListNotifier.dispose();
     super.dispose();
   }
 
@@ -62,22 +80,15 @@ class _StorageScreenState extends State<StorageScreen> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         child: FloatingActionButton(
-          
           backgroundColor: AppColor.primaryColor,
           foregroundColor: AppColor.surfaceContainerLow,
           onPressed: () async {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const AddComponentForm(),
-              ),
+              MaterialPageRoute(builder: (context) => const AddComponentForm()),
             );
             if (result == true) {
-              setState(() {
-                _searchController.clear();
-                _categorySelected = "all";
-                _displayList = SupabaseDatabaseController.listComponentCached;
-              });
+              _chanegDisplayList();
             }
           },
           child: const Icon(Icons.add),
@@ -118,18 +129,14 @@ class _StorageScreenState extends State<StorageScreen> {
 
                 // Đặt timer mới, nếu sau 300ms mà không gõ thêm chữ nào thì mới chạy search
                 _searchDebounce = Timer(const Duration(milliseconds: 300), () {
-                  setState(() {
-                    _displayList = _searchComponent(_searchController.text);
-                  });
+                  _chanegDisplayList();
                 });
               },
               onFieldSubmitted: (value) {
                 if (_searchDebounce?.isActive ?? false) {
                   _searchDebounce!.cancel();
                 }
-                setState(() {
-                  _displayList = _searchComponent(_searchController.text);
-                });
+                _chanegDisplayList();
               },
             ),
 
@@ -143,22 +150,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   ? CategoryFilterWidget(
                       onCategoryChanged: (newKey) => setState(() {
                         _categorySelected = newKey;
-                        if (_searchController.text.isNotEmpty) {
-                          _displayList = _searchComponent(
-                            _searchController.text,
-                          );
-                        } else if (_categorySelected == "all") {
-                          _displayList =
-                              SupabaseDatabaseController.listComponentCached;
-                        } else {
-                          _displayList = SupabaseDatabaseController
-                              .listComponentCached
-                              .where(
-                                (component) =>
-                                    component.categoryID == _categorySelected,
-                              )
-                              .toList();
-                        }
+                        _chanegDisplayList();
                       }),
                     )
                   : SizedBox.shrink(),
@@ -170,11 +162,12 @@ class _StorageScreenState extends State<StorageScreen> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   await SupabaseDatabaseController.getInitialData();
-                  setState(() {});
+                  _chanegDisplayList();
                 },
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    if (notification is ScrollStartNotification || notification is ScrollUpdateNotification) {
+                    if (notification is ScrollStartNotification ||
+                        notification is ScrollUpdateNotification) {
                       setState(() {
                         _isScrolling = true;
                       });
@@ -185,10 +178,15 @@ class _StorageScreenState extends State<StorageScreen> {
                     }
                     return false;
                   },
-                  child: ListView.builder(
-                    itemCount: _displayList.length,
-                    itemBuilder: (context, index) {
-                      return ComponentInfoCard(component: _displayList[index]);
+                  child: ValueListenableBuilder(
+                    valueListenable: _displayListNotifier,
+                    builder: (builder, value, child) {
+                      return ListView.builder(
+                        itemCount: value.length,
+                        itemBuilder: (context, index) {
+                          return ComponentInfoCard(component: value[index]);
+                        },
+                      );
                     },
                   ),
                 ),
