@@ -148,6 +148,7 @@ class _StorageScreenState extends State<StorageScreen> {
               alignment: Alignment.topCenter,
               child: _showCategoryFilter
                   ? CategoryFilterWidget(
+                      selectedCategory: _categorySelected,
                       onCategoryChanged: (newKey) => setState(() {
                         _categorySelected = newKey;
                         _chanegDisplayList();
