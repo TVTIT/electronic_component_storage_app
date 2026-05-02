@@ -9,6 +9,7 @@ import 'package:electronic_component_storage_app/view/storage/component_info_car
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/string_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class StorageScreen extends StatefulWidget {
   const StorageScreen({super.key});
@@ -22,6 +23,7 @@ class _StorageScreenState extends State<StorageScreen> {
 
   bool _showCategoryFilter = true;
   bool _isScrolling = false;
+  final _fabKey = GlobalKey<ExpandableFabState>();
 
   //List<Component> _displayList = [];
   final ValueNotifier<List<Component>> _displayListNotifier = ValueNotifier([]);
@@ -75,23 +77,64 @@ class _StorageScreenState extends State<StorageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
+      floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: AnimatedOpacity(
         opacity: _isScrolling ? 0.3 : 1,
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        child: FloatingActionButton(
-          backgroundColor: AppColor.primaryColor,
-          foregroundColor: AppColor.surfaceContainerLow,
-          onPressed: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddComponentForm()),
-            );
-            if (result == true) {
-              _chanegDisplayList();
-            }
-          },
-          child: const Icon(Icons.add),
+        child: ExpandableFab(
+          key: _fabKey,
+          distance: 70,
+          childrenAnimation: ExpandableFabAnimation.none,
+          type: ExpandableFabType.up,
+          overlayStyle: ExpandableFabOverlayStyle(blur: 8),
+          openButtonBuilder: DefaultFloatingActionButtonBuilder(
+            backgroundColor: AppColor.primaryColor,
+            foregroundColor: Colors.white,
+            child: Icon(Icons.menu),
+          ),
+          closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+            backgroundColor: AppColor.primaryColor,
+            foregroundColor: Colors.white,
+            child: Icon(Icons.close),
+          ),
+          children: [
+            FloatingActionButton.extended(
+              heroTag: null,
+              backgroundColor: AppColor.primaryColor,
+              foregroundColor: Colors.white,
+              label: const Text("Xuất linh kiện"),
+              icon: Icon(Icons.outbox),
+              onPressed: () async {
+                final fabState = _fabKey.currentState;
+                if (fabState != null && fabState.isOpen) {
+                  fabState.toggle();
+                }
+              },
+            ),
+            FloatingActionButton.extended(
+              heroTag: null,
+              backgroundColor: AppColor.primaryColor,
+              foregroundColor: Colors.white,
+              label: const Text("Thêm linh kiện"),
+              icon: Icon(Icons.add_box_outlined),
+              onPressed: () async {
+                final fabState = _fabKey.currentState;
+                if (fabState != null && fabState.isOpen) {
+                  fabState.toggle();
+                }
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddComponentForm(),
+                  ),
+                );
+                if (result == true) {
+                  _chanegDisplayList();
+                }
+              },
+            ),
+          ],
         ),
       ),
       body: Padding(
