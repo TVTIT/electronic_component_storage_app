@@ -4,6 +4,7 @@ import 'package:electronic_component_storage_app/control/supabase_database_contr
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
+import 'package:electronic_component_storage_app/view/storage/add_component/add_component_screen.dart';
 import 'package:electronic_component_storage_app/view/storage/category_filter_widget.dart';
 import 'package:electronic_component_storage_app/view/storage/component_info_card.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
@@ -123,10 +124,9 @@ class _StorageScreenState extends State<StorageScreen> {
                 if (fabState != null && fabState.isOpen) {
                   fabState.toggle();
                 }
-                final result = await Navigator.push(
-                  context,
+                final result = await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const AddComponentForm(),
+                    builder: (context) => const AddComponentScreen(),
                   ),
                 );
                 if (result == true) {
