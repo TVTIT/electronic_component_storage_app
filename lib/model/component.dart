@@ -2,32 +2,30 @@ import 'package:electronic_component_storage_app/string_extension.dart';
 
 class Component {
   Component({
-    required this.id,
-    required this.partNumber,
+    this.id,
     required this.name,
     required this.quantity,
     this.minThreshold = 10,
     required this.locationID,
-    required this.specs,
-    required this.imageUrl,
+    this.specs,
+    this.imageUrl,
     this.addedViaAI = false,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.categoryID,
   }) : searchName = name.toLowerCase().toUnaccented().trim();
 
-  String id;
-  String partNumber;
+  String? id;
   String name;
   String searchName;
   int quantity;
   int minThreshold = 10;
   String locationID;
-  Map<dynamic, dynamic> specs;
-  String imageUrl;
+  Map<dynamic, dynamic>? specs;
+  String? imageUrl;
   bool addedViaAI = false;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   String categoryID;
 
   //static const minThreshold = 10;
@@ -38,11 +36,10 @@ class Component {
   factory Component.fromMap(Map<dynamic, dynamic> data) {
     final String createdAtStr = data['createdAt'] ?? "";
     final String updatedAtStr = data['updatedAt'] ?? "";
-    DateTime createdAt = createdAtStr.isNotEmpty ? DateTime.parse(createdAtStr): _defaultTime;
-    DateTime updatedAt = updatedAtStr.isNotEmpty ? DateTime.parse(updatedAtStr): _defaultTime;
+    DateTime? createdAt = DateTime.tryParse(createdAtStr);
+    DateTime? updatedAt = DateTime.tryParse(updatedAtStr);
     return Component(
       id: data['id'] ?? "",
-      partNumber: data['part_number'] ?? "",
       name: data['name'] ?? "",
       quantity: data['quantity'] ?? "",
       minThreshold: data['min_threshold'] ?? 10,
