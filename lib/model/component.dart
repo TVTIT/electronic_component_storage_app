@@ -29,7 +29,7 @@ class Component {
   String categoryID;
 
   //static const minThreshold = 10;
-  static final DateTime _defaultTime = DateTime(2000);
+  //static final DateTime _defaultTime = DateTime(2000);
 
   bool get isLowStock => quantity < minThreshold;
 
@@ -51,5 +51,34 @@ class Component {
       updatedAt: updatedAt,
       categoryID: data['category_id'],
     );
+  }
+
+  Map<String, dynamic> toMap({bool addToDatabase = false}) {
+    if (addToDatabase) {
+      return {
+        'name': name,
+        'quantity': quantity,
+        'min_threshold': minThreshold,
+        'location_id': locationID,
+        'category_id': categoryID,
+        'specs': specs,
+        'image_url': imageUrl,
+        'added_via_ai': addedViaAI,
+      };
+    } else {
+      return {
+        'id': id,
+        'name': name,
+        'quantity': quantity,
+        'min_threshold': minThreshold,
+        'location_id': locationID,
+        'category_id': categoryID,
+        'specs': specs,
+        'image_url': imageUrl,
+        'added_via_ai': addedViaAI,
+        'created_at': createdAt?.toIso8601String(),
+        'updated_at': updatedAt?.toIso8601String(),
+      };
+    }
   }
 }

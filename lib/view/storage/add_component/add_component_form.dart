@@ -36,32 +36,35 @@ class _AddComponentFormState extends State<AddComponentForm> {
         _isLoading = true;
       });
       try {
-        final newComponent = {
-          'name': _nameController.text.trim(),
-          'part_number': '',
-          'quantity': int.tryParse(_quantityController.text) ?? 0,
-          'min_threshold': int.tryParse(_minQuantityController.text) ?? 0,
-          'category_id': _selectedCategory,
-          'location_id': _selectedLocation,
-        };
-
-        await SupabaseDatabaseController.supabase
-            .from('components')
-            .insert(newComponent);
+        final newComponent = Component(
+          name: _nameController.text,
+          quantity: int.parse(_quantityController.text),
+          locationID: _selectedLocation!,
+          categoryID: _selectedCategory!,
+          minThreshold: int.tryParse(_minQuantityController.text) ?? 5,
+        );
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Thêm linh kiện thành công')),
+            SnackBar(
+              content: Center(child: const Text("Thêm linh kiện thành công")),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              duration: const Duration(milliseconds: 1500),
+            ),
           );
           // Cập nhật lại list component cache
-          await SupabaseDatabaseController.getAllComponent();
-          Navigator.pop(context, true);
+          //await SupabaseDatabaseController.getAllComponent();
+          Navigator.pop(context, newComponent);
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Có lỗi xảy ra: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Có lỗi xảy ra: $e')));
         }
       } finally {
         if (mounted) {
@@ -85,14 +88,18 @@ class _AddComponentFormState extends State<AddComponentForm> {
         child: ListView(
           padding: const EdgeInsets.all(15),
           children: [
-            const Text('Tên linh kiện', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'Tên linh kiện',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 5),
             TextFormField(
               controller: _nameController,
               textInputAction: TextInputAction.next,
               decoration: const InputDecoration(hintText: 'Nhập tên linh kiện'),
-              validator: (value) =>
-                  value == null || value.isEmpty ? 'Vui lòng nhập tên linh kiện' : null,
+              validator: (value) => value == null || value.isEmpty
+                  ? 'Vui lòng nhập tên linh kiện'
+                  : null,
             ),
             const SizedBox(height: 15),
 
@@ -102,15 +109,19 @@ class _AddComponentFormState extends State<AddComponentForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Số lượng', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Số lượng',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 5),
                       TextFormField(
                         controller: _quantityController,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(hintText: '0'),
-                        validator: (value) =>
-                            value == null || value.isEmpty ? 'Nhập số lượng' : null,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Nhập số lượng'
+                            : null,
                       ),
                     ],
                   ),
@@ -120,7 +131,10 @@ class _AddComponentFormState extends State<AddComponentForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Mức báo hết', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Mức báo hết',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 5),
                       TextFormField(
                         controller: _minQuantityController,
@@ -136,7 +150,10 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
             const SizedBox(height: 15),
 
-            const Text('Danh mục', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'Danh mục',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 5),
             DropdownButtonFormField<String>(
               initialValue: _selectedCategory,
@@ -148,7 +165,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
                 );
               }).toList(),
               onChanged: (value) => setState(() => _selectedCategory = value),
-              validator: (value) => value == null ? 'Vui lòng chọn danh mục' : null,
+              validator: (value) =>
+                  value == null ? 'Vui lòng chọn danh mục' : null,
             ),
 
             const SizedBox(height: 15),
@@ -165,7 +183,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
                 );
               }).toList(),
               onChanged: (value) => setState(() => _selectedLocation = value),
-              validator: (value) => value == null ? 'Vui lòng chọn vị trí' : null,
+              validator: (value) =>
+                  value == null ? 'Vui lòng chọn vị trí' : null,
             ),
             const SizedBox(height: 15),
 

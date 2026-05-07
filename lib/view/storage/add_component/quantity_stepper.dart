@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 class QuantityStepper extends StatefulWidget {
   const QuantityStepper({
     super.key,
+    required this.initialValue,
     this.minValue = 1,
     this.maxValue = 99999,
     required this.onChanged,
   });
   final int minValue;
   final int maxValue;
+  final int initialValue;
   final ValueChanged<int> onChanged;
 
   @override
@@ -24,8 +26,8 @@ class _QuantityStepperState extends State<QuantityStepper> {
   @override
   void initState() {
     super.initState();
-    _currentValue = widget.minValue;
-    _controller = TextEditingController(text: _currentValue.toString());
+    _controller = TextEditingController(text: widget.initialValue.toString());
+    _currentValue = widget.initialValue;
   }
 
   @override
@@ -47,7 +49,16 @@ class _QuantityStepperState extends State<QuantityStepper> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                _currentValue--;
+                if (_currentValue < widget.minValue) {
+                  _currentValue = widget.minValue;
+                }
+                _controller.text = _currentValue.toString();
+                widget.onChanged(_currentValue);
+              });
+            },
             icon: Icon(Icons.remove),
             color: AppColor.primaryColor,
           ),
@@ -71,7 +82,16 @@ class _QuantityStepperState extends State<QuantityStepper> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                _currentValue++;
+                if (_currentValue > widget.maxValue) {
+                  _currentValue = widget.maxValue;
+                }
+                _controller.text = _currentValue.toString();
+                widget.onChanged(_currentValue);
+              });
+            },
             icon: Icon(Icons.add),
             color: AppColor.primaryColor,
           ),

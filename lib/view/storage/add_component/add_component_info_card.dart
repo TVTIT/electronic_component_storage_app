@@ -5,15 +5,32 @@ import 'package:electronic_component_storage_app/view/storage/add_component/quan
 import 'package:flutter/material.dart';
 
 class AddComponentInfoCard extends StatefulWidget {
-  const AddComponentInfoCard({super.key, required this.component});
+  const AddComponentInfoCard({
+    super.key,
+    required this.component,
+    required this.onQuantityChanged,
+    required this.onDelete,
+  });
 
   final Component component;
+  final ValueChanged<int> onQuantityChanged;
+  final VoidCallback onDelete;
 
   @override
   State<AddComponentInfoCard> createState() => _AddComponentInfoCardState();
 }
 
 class _AddComponentInfoCardState extends State<AddComponentInfoCard> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -92,9 +109,12 @@ class _AddComponentInfoCardState extends State<AddComponentInfoCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        QuantityStepper(onChanged: (newValue) {}),
+        QuantityStepper(
+          onChanged: widget.onQuantityChanged,
+          initialValue: widget.component.quantity,
+        ),
         IconButton(
-          onPressed: () {},
+          onPressed: widget.onDelete,
           icon: Icon(Icons.delete_forever_outlined),
           color: AppColor.errorColor,
           iconSize: 32,
