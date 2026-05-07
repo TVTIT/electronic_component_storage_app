@@ -143,7 +143,7 @@ class _AddComponentScreenState extends State<AddComponentScreen> {
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       return AddComponentInfoCard(
-                        key: ObjectKey(value[index]),
+                        key: ObjectKey(value[index]), //Đánh dấu key bằng component đang hiện
                         component: value[index],
                         onQuantityChanged: (value) {
                           _listAddListen.value[index].quantity = value;
