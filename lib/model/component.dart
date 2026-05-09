@@ -54,8 +54,9 @@ class Component {
   }
 
   Map<String, dynamic> toMap({bool addToDatabase = false}) {
+    Map<String, dynamic> result = {};
     if (addToDatabase) {
-      return {
+      result = {
         'name': name,
         'quantity': quantity,
         'min_threshold': minThreshold,
@@ -66,7 +67,7 @@ class Component {
         'added_via_ai': addedViaAI,
       };
     } else {
-      return {
+      result = {
         'id': id,
         'name': name,
         'quantity': quantity,
@@ -80,5 +81,10 @@ class Component {
         'updated_at': updatedAt?.toIso8601String(),
       };
     }
+
+    // Xoá các giá trị null
+    result.removeWhere((key, value) => value == null || value.toString().trim().isEmpty);
+
+    return result;
   }
 }
