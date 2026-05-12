@@ -54,4 +54,16 @@ class SupabaseDatabaseController {
     await SupabaseDatabaseController.getAllLocation();
     await SupabaseDatabaseController.getAllCategory();
   }
+
+  static Future<void> addComponent(Component component) async {
+    await supabase
+        .from('components')
+        .insert(component.toMap(addToDatabase: true));
+  }
+
+  static Future<void> addBulkComponent(List<Component> components) async {
+    await supabase
+        .from('components')
+        .insert(components.map((e) => e.toMap(addToDatabase: true)).toList());
+  }
 }

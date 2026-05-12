@@ -38,6 +38,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   flutter_launcher_icons: ^0.14.4
   persistent_bottom_nav_bar_v2: ^6.3.2
+  flutter_expandable_fab: ^2.5.2
 
 dev_dependencies:
   flutter_test:

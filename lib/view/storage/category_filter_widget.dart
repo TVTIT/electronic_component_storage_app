@@ -4,15 +4,16 @@ import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 
 class CategoryFilterWidget extends StatefulWidget {
-  const CategoryFilterWidget({super.key, required this.onCategoryChanged});
+  const CategoryFilterWidget({super.key, required this.onCategoryChanged, this.selectedCategory = "all"});
   final Function(String) onCategoryChanged;
+  final String selectedCategory;
 
   @override
   State<CategoryFilterWidget> createState() => _CategoryFilterWidgetState();
 }
 
 class _CategoryFilterWidgetState extends State<CategoryFilterWidget> {
-  String _selectedKey = "all";
+  late String _selectedKey = widget.selectedCategory;
 
   @override
   Widget build(BuildContext context) {

@@ -2,47 +2,44 @@ import 'package:electronic_component_storage_app/string_extension.dart';
 
 class Component {
   Component({
-    required this.id,
-    required this.partNumber,
+    this.id,
     required this.name,
     required this.quantity,
     this.minThreshold = 10,
     required this.locationID,
-    required this.specs,
-    required this.imageUrl,
+    this.specs,
+    this.imageUrl,
     this.addedViaAI = false,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.categoryID,
   }) : searchName = name.toLowerCase().toUnaccented().trim();
 
-  String id;
-  String partNumber;
+  String? id;
   String name;
   String searchName;
   int quantity;
   int minThreshold = 10;
   String locationID;
-  Map<dynamic, dynamic> specs;
-  String imageUrl;
+  Map<dynamic, dynamic>? specs;
+  String? imageUrl;
   bool addedViaAI = false;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   String categoryID;
 
   //static const minThreshold = 10;
-  static final DateTime _defaultTime = DateTime(2000);
+  //static final DateTime _defaultTime = DateTime(2000);
 
   bool get isLowStock => quantity < minThreshold;
 
   factory Component.fromMap(Map<dynamic, dynamic> data) {
     final String createdAtStr = data['createdAt'] ?? "";
     final String updatedAtStr = data['updatedAt'] ?? "";
-    DateTime createdAt = createdAtStr.isNotEmpty ? DateTime.parse(createdAtStr): _defaultTime;
-    DateTime updatedAt = updatedAtStr.isNotEmpty ? DateTime.parse(updatedAtStr): _defaultTime;
+    DateTime? createdAt = DateTime.tryParse(createdAtStr);
+    DateTime? updatedAt = DateTime.tryParse(updatedAtStr);
     return Component(
       id: data['id'] ?? "",
-      partNumber: data['partNumber'] ?? "",
       name: data['name'] ?? "",
       quantity: data['quantity'] ?? "",
       minThreshold: data['min_threshold'] ?? 10,
@@ -54,5 +51,40 @@ class Component {
       updatedAt: updatedAt,
       categoryID: data['category_id'],
     );
+  }
+
+  Map<String, dynamic> toMap({bool addToDatabase = false}) {
+    Map<String, dynamic> result = {};
+    if (addToDatabase) {
+      result = {
+        'name': name,
+        'quantity': quantity,
+        'min_threshold': minThreshold,
+        'location_id': locationID,
+        'category_id': categoryID,
+        'specs': specs,
+        'image_url': imageUrl,
+        'added_via_ai': addedViaAI,
+      };
+    } else {
+      result = {
+        'id': id,
+        'name': name,
+        'quantity': quantity,
+        'min_threshold': minThreshold,
+        'location_id': locationID,
+        'category_id': categoryID,
+        'specs': specs,
+        'image_url': imageUrl,
+        'added_via_ai': addedViaAI,
+        'created_at': createdAt?.toIso8601String(),
+        'updated_at': updatedAt?.toIso8601String(),
+      };
+    }
+
+    // Xoá các giá trị null
+    result.removeWhere((key, value) => value == null || value.toString().trim().isEmpty);
+
+    return result;
   }
 }
