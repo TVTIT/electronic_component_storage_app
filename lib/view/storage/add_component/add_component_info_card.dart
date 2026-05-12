@@ -1,6 +1,7 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/quantity_stepper.dart';
 import 'package:flutter/material.dart';
 
@@ -11,12 +12,14 @@ class AddComponentInfoCard extends StatefulWidget {
     required this.onQuantityChanged,
     required this.onDelete,
     this.isExportScreen = false,
+    this.onTap,
   });
 
   final Component component;
   final ValueChanged<int> onQuantityChanged;
   final VoidCallback onDelete;
   final bool isExportScreen;
+  final VoidCallback? onTap;
 
   @override
   State<AddComponentInfoCard> createState() => _AddComponentInfoCardState();
@@ -35,25 +38,28 @@ class _AddComponentInfoCardState extends State<AddComponentInfoCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      elevation: 0,
-      color: AppColor.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.component.name,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 5),
-            _buildInfoBlock(),
-            const SizedBox(height: 5),
-            _buildInteractBlock(),
-          ],
+    return InkWell(
+      onTap: widget.onTap,
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        elevation: 0,
+        color: AppColor.surfaceContainerHighest,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.component.name,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 5),
+              _buildInfoBlock(),
+              const SizedBox(height: 5),
+              _buildInteractBlock(),
+            ],
+          ),
         ),
       ),
     );

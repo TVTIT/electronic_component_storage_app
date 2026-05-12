@@ -4,7 +4,9 @@ import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class AddComponentForm extends StatefulWidget {
-  const AddComponentForm({super.key});
+  const AddComponentForm({super.key, this.component});
+
+  final Component? component;
 
   @override
   State<AddComponentForm> createState() => _AddComponentFormState();
@@ -49,6 +51,21 @@ class _AddComponentFormState extends State<AddComponentForm> {
   String? _selectedLocation;
   bool _isLoading = false;
 
+  late String _title = "Thêm linh kiện mới";
+  late String _buttonText = "Thêm linh kiện";
+  late String _snackBarText = "Thêm linh kiện thành công";
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.component != null) {
+      _autoFillForm(widget.component!);
+      _title = "Sửa linh kiện";
+      _buttonText = "Lưu lại";
+      _snackBarText = "Sửa linh kiện thành công";
+    }
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -80,6 +97,45 @@ class _AddComponentFormState extends State<AddComponentForm> {
     _chipsetController.dispose();
 
     super.dispose();
+  }
+
+  void _autoFillForm(Component component) {
+    _nameController.text = component.name;
+    _quantityController.text = component.quantity > 0
+        ? component.quantity.toString()
+        : '';
+    _minQuantityController.text = component.minThreshold.toString();
+
+    _selectedCategory = component.categoryID;
+    _selectedLocation = component.locationID;
+
+    if (component.specs != null) {
+      final Map<dynamic, dynamic> specs = component.specs!;
+      if (_selectedCategory == "resistor") {
+        _resistanceController.text = specs['resistance']?.toString() ?? '';
+        _powerController.text = specs['power']?.toString() ?? '';
+        _toleranceController.text = specs['tolerance']?.toString() ?? '';
+        _resistorPackageController.text = specs['package']?.toString() ?? '';
+      } else if (_selectedCategory == "capacitor") {
+        _capacitanceController.text = specs['capacitance']?.toString() ?? '';
+        _voltageMaxController.text = specs['voltage_max']?.toString() ?? '';
+        _capacitorTypeController.text = specs['type']?.toString() ?? '';
+        _capacitorPackageController.text = specs['package']?.toString() ?? '';
+      } else if (_selectedCategory == "ic") {
+        _pinsController.text = specs['pins']?.toString() ?? '';
+        _icPackageController.text = specs['package']?.toString() ?? '';
+        _voltageRangeController.text = specs['voltage_range']?.toString() ?? '';
+        _familyController.text = specs['family']?.toString() ?? '';
+      } else if (_selectedCategory == "inductor") {
+        _inductanceController.text = specs['inductance']?.toString() ?? '';
+        _currentMaxController.text = specs['current_max']?.toString() ?? '';
+        _inductorTypeController.text = specs['type']?.toString() ?? '';
+      } else if (_selectedCategory == "sensor") {
+        _interfaceController.text = specs['interface']?.toString() ?? '';
+        _sensorVoltageInController.text = specs['voltage_in']?.toString() ?? '';
+        _chipsetController.text = specs['chipset']?.toString() ?? '';
+      }
+    }
   }
 
   Future<void> _addComponent() async {
@@ -126,7 +182,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
         }
 
         // Xoá các giá trị null
-        specs.removeWhere((key, value) => value == null || value.toString().trim().isEmpty);
+        specs.removeWhere(
+          (key, value) => value == null || value.toString().trim().isEmpty,
+        );
 
         final newComponent = Component(
           name: _nameController.text,
@@ -140,7 +198,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Center(child: const Text("Thêm linh kiện thành công")),
+              content: Center(child: Text(_snackBarText)),
               behavior: SnackBarBehavior.floating,
               margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
               shape: RoundedRectangleBorder(
@@ -167,7 +225,12 @@ class _AddComponentFormState extends State<AddComponentForm> {
     }
   }
 
-  Widget _buildTextField(String label, String hint, TextEditingController controller, {TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildTextField(
+    String label,
+    String hint,
+    TextEditingController controller, {
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: Column(
@@ -193,7 +256,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
         _buildTextField('Giá trị', '10k, 1M, 220R', _resistanceController),
         _buildTextField('Công suất chịu tải', '1/4W, 1W, 5W', _powerController),
         _buildTextField('Sai số', '1%, 5%', _toleranceController),
-        _buildTextField('Kiểu chân', 'Chân cắm, SMD', _resistorPackageController),
+        _buildTextField(
+          'Kiểu chân',
+          'Chân cắm, SMD',
+          _resistorPackageController,
+        ),
       ],
     );
   }
@@ -205,7 +272,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
         _buildTextField('Loại tụ', 'Tụ hoá, tụ gốm', _capacitorTypeController),
         _buildTextField('Điện dung', '100nF, 22uF', _capacitanceController),
         _buildTextField('Điện áp tối đa', '50V, 16V', _voltageMaxController),
-        _buildTextField('Kiểu chân', 'Chân cắm, SMD', _capacitorPackageController),
+        _buildTextField(
+          'Kiểu chân',
+          'Chân cắm, SMD',
+          _capacitorPackageController,
+        ),
       ],
     );
   }
@@ -215,9 +286,18 @@ class _AddComponentFormState extends State<AddComponentForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField('Dòng IC', 'Timer, Op-Amp, MCU', _familyController),
-        _buildTextField('Số chân', 'Nhập số chân', _pinsController, keyboardType: TextInputType.number),
+        _buildTextField(
+          'Số chân',
+          'Nhập số chân',
+          _pinsController,
+          keyboardType: TextInputType.number,
+        ),
         _buildTextField('Kiểu đóng gói', 'DIP-8, SOIC', _icPackageController),
-        _buildTextField('Dải điện áp hoạt động', '4.5V - 15V', _voltageRangeController),
+        _buildTextField(
+          'Dải điện áp hoạt động',
+          '4.5V - 15V',
+          _voltageRangeController,
+        ),
       ],
     );
   }
@@ -227,8 +307,16 @@ class _AddComponentFormState extends State<AddComponentForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField('Giá trị cuộn cảm', '10uH, 1mH', _inductanceController),
-        _buildTextField('Dòng bão hòa tối đa', '2A, 500mA', _currentMaxController),
-        _buildTextField('Loại cuộn cảm', 'Quấn dây, đa lớp', _inductorTypeController),
+        _buildTextField(
+          'Dòng bão hòa tối đa',
+          '2A, 500mA',
+          _currentMaxController,
+        ),
+        _buildTextField(
+          'Loại cuộn cảm',
+          'Quấn dây, đa lớp',
+          _inductorTypeController,
+        ),
       ],
     );
   }
@@ -238,7 +326,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField('Chip cảm biến', 'MPU6050, DHT11', _chipsetController),
-        _buildTextField('Giao thức giao tiếp', 'I2C, SPI, Analog', _interfaceController),
+        _buildTextField(
+          'Giao thức giao tiếp',
+          'I2C, SPI, Analog',
+          _interfaceController,
+        ),
         _buildTextField('Điện áp cấp', '3.3V - 5V', _sensorVoltageInController),
       ],
     );
@@ -266,7 +358,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
     final locations = SupabaseDatabaseController.locationMapCached;
 
     return Scaffold(
-      appBar: MyAppBar(title: "Thêm linh kiện mới"),
+      appBar: MyAppBar(title: _title),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -385,8 +477,12 @@ class _AddComponentFormState extends State<AddComponentForm> {
                 minimumSize: const Size.fromHeight(50),
               ),
               child: _isLoading
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5))
-                  : const Text('Thêm linh kiện'),
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    )
+                  : Text(_buttonText),
             ),
           ],
         ),

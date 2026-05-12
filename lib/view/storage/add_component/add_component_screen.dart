@@ -149,6 +149,20 @@ class _AddComponentScreenState extends State<AddComponentScreen> {
                           _listAddListen.value[index].quantity = value;
                         },
                         onDelete: () => _deleteComponent(index),
+                        onTap: () async {
+                          final result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => AddComponentForm(
+                                component: value[index],
+                              ),
+                            ),
+                          );
+                          if (result != null) {
+                            List<Component> temp = List.from(_listAddListen.value);
+                            temp[index] = result;
+                            _listAddListen.value = temp;
+                          }
+                        },
                       );
                     },
                   );
