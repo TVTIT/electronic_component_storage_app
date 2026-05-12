@@ -405,7 +405,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
                               .push(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const SelectComponentScreen(),
+                                      const SelectComponentScreen(showOutOfStockComponent: true,),
                                 ),
                               );
 

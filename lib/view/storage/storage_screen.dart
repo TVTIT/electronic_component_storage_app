@@ -14,9 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class StorageScreen extends StatefulWidget {
-  const StorageScreen({super.key, this.isSelectScreen = false});
+  const StorageScreen({super.key, this.isSelectScreen = false, this.showOutOfStockComponentInSelectScreen = false});
 
   final bool isSelectScreen;
+  final bool showOutOfStockComponentInSelectScreen;
 
   @override
   State<StorageScreen> createState() => _StorageScreenState();
@@ -65,7 +66,7 @@ class _StorageScreenState extends State<StorageScreen> {
       }
     }
 
-    if (widget.isSelectScreen) {
+    if (widget.isSelectScreen && !widget.showOutOfStockComponentInSelectScreen) {
       _displayListNotifier.value = List.from(
         _displayListNotifier.value
             .where((component) => component.quantity > 0)

@@ -2,10 +2,11 @@ import 'package:electronic_component_storage_app/view/storage/storage_screen.dar
 import 'package:flutter/material.dart';
 
 class SelectComponentScreen extends StatelessWidget {
-  const SelectComponentScreen({super.key});
+  const SelectComponentScreen({super.key, this.showOutOfStockComponent = false});
+  final bool showOutOfStockComponent;
 
   @override
   Widget build(BuildContext context) {
-    return const StorageScreen(isSelectScreen: true,);
+    return StorageScreen(isSelectScreen: true, showOutOfStockComponentInSelectScreen: showOutOfStockComponent,);
   }
 }
