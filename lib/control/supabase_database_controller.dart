@@ -70,7 +70,9 @@ class SupabaseDatabaseController {
         .insert(components.map((e) => e.toMap(addToDatabase: true)).toList());
   }
 
-  static Future<void> addImportQuantityComponent(List<Component> components) async {
+  static Future<void> addImportQuantityComponent(
+    List<Component> components,
+  ) async {
     List<Map<String, dynamic>> updateData = components
         .map((component) => component.toMap())
         .toList();
@@ -83,5 +85,16 @@ class SupabaseDatabaseController {
         .map((component) => component.toIdQuantityMap())
         .toList();
     await supabase.rpc('export_components', params: {'payload': updateData});
+  }
+
+  static Future<void> updateComponent(Component component) async {
+    if (component.id != null) {
+      await supabase
+          .from('components')
+          .update(component.toMap(addToDatabase: true))
+          .eq('id', component.id!);
+    } else {
+      throw Exception("component.id is null");
+    }
   }
 }

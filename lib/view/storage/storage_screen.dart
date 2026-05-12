@@ -74,11 +74,7 @@ class _StorageScreenState extends State<StorageScreen> {
     }
   }
 
-  void _onTapInfoCard(Component component) {
-    if (widget.isSelectScreen) {
-      Navigator.of(context).pop(component);
-    }
-  }
+  Future<void> _onTapInfoCard(Component component) async {}
 
   @override
   void initState() {
@@ -264,7 +260,32 @@ class _StorageScreenState extends State<StorageScreen> {
                         itemBuilder: (context, index) {
                           return ComponentInfoCard(
                             component: value[index],
-                            onTap: _onTapInfoCard,
+                            onTap: (component) async {
+                              if (widget.isSelectScreen) {
+                                Navigator.of(context).pop(component);
+                              } else {
+                                final result = await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => AddComponentForm(
+                                      component: component,
+                                      isFromStogareScreen: true,
+                                    ),
+                                  ),
+                                );
+                                if (result != null && result) {
+                                  _chanegDisplayList();
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Center(
+                                          child: Text("Cập nhật thông tin thành công"),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                            },
                           );
                         },
                       );

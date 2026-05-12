@@ -3,11 +3,17 @@ import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddComponentForm extends StatefulWidget {
-  const AddComponentForm({super.key, this.component});
+  const AddComponentForm({
+    super.key,
+    this.component,
+    this.isFromStogareScreen = false,
+  });
 
   final Component? component;
+  final bool isFromStogareScreen;
 
   @override
   State<AddComponentForm> createState() => _AddComponentFormState();
@@ -16,7 +22,7 @@ class AddComponentForm extends StatefulWidget {
 class _AddComponentFormState extends State<AddComponentForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _quantityController = TextEditingController();
+  final _quantityController = TextEditingController(text: "10");
   final _minQuantityController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -59,6 +65,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
   @override
   void initState() {
     super.initState();
+    if (widget.isFromStogareScreen && widget.component == null) {
+      throw Exception(
+        '(component == null && isFromStogareScreen == true) is not false',
+      );
+    }
     if (widget.component != null) {
       _autoFillForm(widget.component!);
       _title = "Sửa linh kiện";
@@ -196,18 +207,25 @@ class _AddComponentFormState extends State<AddComponentForm> {
           specs: specs.isNotEmpty ? specs : null,
         );
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text(_snackBarText)),
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+        if (widget.isFromStogareScreen) {
+          newComponent.id = widget.component!.id;
+          await SupabaseDatabaseController.updateComponent(newComponent);
+          await SupabaseDatabaseController.getAllComponent();
+          Navigator.pop(context, true);
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Center(child: Text(_snackBarText)),
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                duration: const Duration(milliseconds: 1500),
               ),
-              duration: const Duration(milliseconds: 1500),
-            ),
-          );
+            );
+          }
           Navigator.pop(context, newComponent);
         }
       } catch (e) {
@@ -358,12 +376,19 @@ class _AddComponentFormState extends State<AddComponentForm> {
     final categories = SupabaseDatabaseController.categoryMapCached;
     final locations = SupabaseDatabaseController.locationMapCached;
 
+    final showSelectExistComponent = widget.component == null;
+
     return Scaffold(
       appBar: MyAppBar(title: _title),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
+          padding: EdgeInsets.only(
+            left: 15,
+            right: 15,
+            bottom: 15,
+            top: showSelectExistComponent ? 0 : 15,
+          ),
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -373,21 +398,25 @@ class _AddComponentFormState extends State<AddComponentForm> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
-                TextButton(
-                  onPressed: () async {
-                    final Component? result = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const SelectComponentScreen(),
-                      ),
-                    );
-                    
-                    if (result != null) {
-                      result.quantity = 1;
-                      Navigator.of(context).pop(result);
-                    }
-                  },
-                  child: const Text("CHỌN LINH KIỆN CÓ SẴN"),
-                ),
+                showSelectExistComponent
+                    ? TextButton(
+                        onPressed: () async {
+                          final Component? result = await Navigator.of(context)
+                              .push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SelectComponentScreen(),
+                                ),
+                              );
+
+                          if (result != null) {
+                            result.quantity = 1;
+                            Navigator.of(context).pop(result);
+                          }
+                        },
+                        child: const Text("CHỌN LINH KIỆN CÓ SẴN"),
+                      )
+                    : const SizedBox(height: 30),
               ],
             ),
             //const SizedBox(height: 5),
@@ -414,13 +443,28 @@ class _AddComponentFormState extends State<AddComponentForm> {
                       ),
                       const SizedBox(height: 5),
                       TextFormField(
+                        readOnly: widget.isFromStogareScreen,
                         controller: _quantityController,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(hintText: '0'),
                         validator: (value) => value == null || value.isEmpty
                             ? 'Nhập số lượng'
                             : null,
+                        onTap: () {
+                          if (widget.isFromStogareScreen) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                  "Bạn chỉ có thể thay đổi số lượng bằng tính năng Nhập/Xuất linh kiện",
+                                ),
+                              ),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -438,8 +482,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
                       TextFormField(
                         controller: _minQuantityController,
                         keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(hintText: '0'),
+                        decoration: const InputDecoration(hintText: '10'),
                       ),
                     ],
                   ),
