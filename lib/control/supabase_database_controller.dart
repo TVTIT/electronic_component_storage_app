@@ -6,7 +6,10 @@ class SupabaseDatabaseController {
 
   static List<Component> listComponentCached = [];
   static Future<List<Component>> getAllComponent() async {
-    List<Map> listMap = await supabase.from('components').select();
+    List<Map> listMap = await supabase
+        .from('components')
+        .select()
+        .order('id', ascending: true);
     listComponentCached = listMap.map((map) => Component.fromMap(map)).toList();
     return listComponentCached;
   }
