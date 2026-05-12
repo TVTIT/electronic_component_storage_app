@@ -130,7 +130,7 @@ class _StorageScreenState extends State<StorageScreen> {
                     heroTag: null,
                     backgroundColor: AppColor.primaryColor,
                     foregroundColor: Colors.white,
-                    label: const Text("Xuất linh kiện"),
+                    label: const Text("Xuất kho linh kiện"),
                     icon: Icon(Icons.outbox),
                     onPressed: () async {
                       final fabState = _fabKey.currentState;
@@ -151,7 +151,7 @@ class _StorageScreenState extends State<StorageScreen> {
                     heroTag: null,
                     backgroundColor: AppColor.primaryColor,
                     foregroundColor: Colors.white,
-                    label: const Text("Thêm linh kiện"),
+                    label: const Text("Nhập kho linh kiện"),
                     icon: Icon(Icons.add_box_outlined),
                     onPressed: () async {
                       final fabState = _fabKey.currentState;
