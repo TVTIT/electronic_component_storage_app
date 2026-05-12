@@ -54,44 +54,29 @@ class Component {
   }
 
   Map<String, dynamic> toMap({bool addToDatabase = false}) {
-    Map<String, dynamic> result = {};
-    if (addToDatabase) {
-      result = {
-        'name': name,
-        'quantity': quantity,
-        'min_threshold': minThreshold,
-        'location_id': locationID,
-        'category_id': categoryID,
-        'specs': specs,
-        'image_url': imageUrl,
-        'added_via_ai': addedViaAI,
-      };
-    } else {
-      result = {
-        'id': id,
-        'name': name,
-        'quantity': quantity,
-        'min_threshold': minThreshold,
-        'location_id': locationID,
-        'category_id': categoryID,
-        'specs': specs,
-        'image_url': imageUrl,
-        'added_via_ai': addedViaAI,
-        'created_at': createdAt?.toIso8601String(),
-        'updated_at': updatedAt?.toIso8601String(),
-      };
-    }
+    Map<String, dynamic> result = {
+      'id': id,
+      'name': name,
+      'quantity': quantity,
+      'min_threshold': minThreshold,
+      'location_id': locationID,
+      'category_id': categoryID,
+      'specs': specs,
+      'image_url': imageUrl,
+      'added_via_ai': addedViaAI,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+    };
 
     // Xoá các giá trị null
-    result.removeWhere((key, value) => value == null || value.toString().trim().isEmpty);
+    result.removeWhere(
+      (key, value) => value == null || value.toString().trim().isEmpty,
+    );
 
     return result;
   }
 
   Map<String, dynamic> toIdQuantityMap() {
-    return {
-      'id': id,
-      'quantity': quantity,
-    };
+    return {'id': id, 'quantity': quantity};
   }
 }

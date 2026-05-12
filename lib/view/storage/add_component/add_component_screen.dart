@@ -94,7 +94,9 @@ class _AddComponentScreenState extends State<AddComponentScreen> {
       _isLoading = true;
     });
     try {
-      await SupabaseDatabaseController.addBulkComponent(_listAddListen.value);
+      await SupabaseDatabaseController.addImportQuantityComponent(
+        _listAddListen.value,
+      );
       await SupabaseDatabaseController.getAllComponent();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -143,24 +145,49 @@ class _AddComponentScreenState extends State<AddComponentScreen> {
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       return AddComponentInfoCard(
-                        key: ObjectKey(value[index]), //Đánh dấu key bằng component đang hiện
+                        key: ObjectKey(
+                          value[index],
+                        ), //Đánh dấu key bằng component đang hiện
                         component: value[index],
                         onQuantityChanged: (value) {
                           _listAddListen.value[index].quantity = value;
                         },
                         onDelete: () => _deleteComponent(index),
                         onTap: () async {
-                          final result = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => AddComponentForm(
-                                component: value[index],
+                          if (value[index].id != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Center(
+                                  child: const Text(
+                                    "Bạn không được sửa linh kiện có sẵn",
+                                  ),
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                                margin: const EdgeInsets.only(
+                                  bottom: 80,
+                                  left: 20,
+                                  right: 20,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                duration: const Duration(milliseconds: 1500),
                               ),
-                            ),
-                          );
-                          if (result != null) {
-                            List<Component> temp = List.from(_listAddListen.value);
-                            temp[index] = result;
-                            _listAddListen.value = temp;
+                            );
+                          } else {
+                            final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddComponentForm(component: value[index]),
+                              ),
+                            );
+                            if (result != null) {
+                              List<Component> temp = List.from(
+                                _listAddListen.value,
+                              );
+                              temp[index] = result;
+                              _listAddListen.value = temp;
+                            }
                           }
                         },
                       );

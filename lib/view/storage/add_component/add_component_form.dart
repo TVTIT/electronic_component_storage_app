@@ -1,6 +1,7 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
+import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
 import 'package:flutter/material.dart';
 
 class AddComponentForm extends StatefulWidget {
@@ -362,13 +363,34 @@ class _AddComponentFormState extends State<AddComponentForm> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
           children: [
-            const Text(
-              'Tên linh kiện',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Tên linh kiện',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+
+                TextButton(
+                  onPressed: () async {
+                    final Component? result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SelectComponentScreen(),
+                      ),
+                    );
+                    
+                    if (result != null) {
+                      result.quantity = 1;
+                      Navigator.of(context).pop(result);
+                    }
+                  },
+                  child: const Text("CHỌN LINH KIỆN CÓ SẴN"),
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
+            //const SizedBox(height: 5),
             TextFormField(
               controller: _nameController,
               textInputAction: TextInputAction.next,

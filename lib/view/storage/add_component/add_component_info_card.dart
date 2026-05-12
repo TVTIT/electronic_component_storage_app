@@ -38,31 +38,32 @@ class _AddComponentInfoCardState extends State<AddComponentInfoCard> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      child: Card(
+    return Card(
+        clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.symmetric(vertical: 10),
         elevation: 0,
         color: AppColor.surfaceContainerHighest,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.component.name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              _buildInfoBlock(),
-              const SizedBox(height: 5),
-              _buildInteractBlock(),
-            ],
+        child: InkWell(
+          onTap: widget.onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.component.name,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 5),
+                _buildInfoBlock(),
+                const SizedBox(height: 5),
+                _buildInteractBlock(),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildInfoBlock() {

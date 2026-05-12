@@ -14,9 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class StorageScreen extends StatefulWidget {
-  const StorageScreen({super.key, this.isExportScreen = false});
+  const StorageScreen({super.key, this.isSelectScreen = false});
 
-  final bool isExportScreen;
+  final bool isSelectScreen;
 
   @override
   State<StorageScreen> createState() => _StorageScreenState();
@@ -65,7 +65,7 @@ class _StorageScreenState extends State<StorageScreen> {
       }
     }
 
-    if (widget.isExportScreen) {
+    if (widget.isSelectScreen) {
       _displayListNotifier.value = List.from(
         _displayListNotifier.value
             .where((component) => component.quantity > 0)
@@ -75,14 +75,14 @@ class _StorageScreenState extends State<StorageScreen> {
   }
 
   void _onTapInfoCard(Component component) {
-    if (widget.isExportScreen) {
+    if (widget.isSelectScreen) {
       Navigator.of(context).pop(component);
     }
   }
 
   @override
   void initState() {
-    if (widget.isExportScreen) {
+    if (widget.isSelectScreen) {
       _title = "Chọn linh kiện";
       _appBarIcon = null;
     }
@@ -103,7 +103,7 @@ class _StorageScreenState extends State<StorageScreen> {
     return Scaffold(
       appBar: MyAppBar(icon: _appBarIcon, title: _title),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: widget.isExportScreen
+      floatingActionButton: widget.isSelectScreen
           ? null
           : AnimatedOpacity(
               opacity: _isScrolling ? 0.3 : 1,
