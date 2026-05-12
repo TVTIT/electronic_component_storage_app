@@ -50,14 +50,12 @@ class _QuantityStepperState extends State<QuantityStepper> {
         children: [
           IconButton(
             onPressed: () {
-              setState(() {
-                _currentValue--;
-                if (_currentValue < widget.minValue) {
-                  _currentValue = widget.minValue;
-                }
-                _controller.text = _currentValue.toString();
-                widget.onChanged(_currentValue);
-              });
+              _currentValue--;
+              if (_currentValue < widget.minValue) {
+                _currentValue = widget.minValue;
+              }
+              _controller.text = _currentValue.toString();
+              widget.onChanged(_currentValue);
             },
             icon: Icon(Icons.remove),
             color: AppColor.primaryColor,
@@ -79,18 +77,31 @@ class _QuantityStepperState extends State<QuantityStepper> {
               ),
               style: TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  _controller.text = widget.minValue.toString();
+                  _currentValue = widget.minValue;
+                } else {
+                  int? valueInt = int.tryParse(
+                    value,
+                  )?.clamp(widget.minValue, widget.maxValue);
+                  if (valueInt != null) {
+                    _controller.text = valueInt.toString();
+                    _currentValue = valueInt;
+                  }
+                }
+                widget.onChanged(_currentValue);
+              },
             ),
           ),
           IconButton(
             onPressed: () {
-              setState(() {
-                _currentValue++;
-                if (_currentValue > widget.maxValue) {
-                  _currentValue = widget.maxValue;
-                }
-                _controller.text = _currentValue.toString();
-                widget.onChanged(_currentValue);
-              });
+              _currentValue++;
+              if (_currentValue > widget.maxValue) {
+                _currentValue = widget.maxValue;
+              }
+              _controller.text = _currentValue.toString();
+              widget.onChanged(_currentValue);
             },
             icon: Icon(Icons.add),
             color: AppColor.primaryColor,
