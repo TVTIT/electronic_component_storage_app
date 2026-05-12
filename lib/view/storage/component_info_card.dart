@@ -19,7 +19,7 @@ class ComponentInfoCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => onTap?.call(component),
         child: Padding(
