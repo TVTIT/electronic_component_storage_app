@@ -87,4 +87,11 @@ class Component {
 
     return result;
   }
+
+  Map<String, dynamic> toIdQuantityMap() {
+    return {
+      'id': id,
+      'quantity': quantity,
+    };
+  }
 }

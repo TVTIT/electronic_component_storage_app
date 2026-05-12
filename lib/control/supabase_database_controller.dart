@@ -66,4 +66,12 @@ class SupabaseDatabaseController {
         .from('components')
         .insert(components.map((e) => e.toMap(addToDatabase: true)).toList());
   }
+
+  //Quantity trong list là quantity sau khi xuất
+  static Future<void> exportBulkComponent(List<Component> components) async {
+    List<Map<String, dynamic>> updateData = components
+        .map((component) => component.toIdQuantityMap())
+        .toList();
+    await supabase.rpc('export_components', params: {'payload': updateData});
+  }
 }

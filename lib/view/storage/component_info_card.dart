@@ -4,7 +4,9 @@ import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 
 class ComponentInfoCard extends StatelessWidget {
-  const ComponentInfoCard({super.key, required this.component});
+  const ComponentInfoCard({super.key, required this.component, this.onTap});
+
+  final Function(Component component)? onTap;
 
   final Component component;
 
@@ -17,50 +19,54 @@ class ComponentInfoCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: _buildInfoBlock(
-                    label:
-                        "Phân loại: ${SupabaseDatabaseController.categoryMapCached[component.categoryID]['name'] ?? "Khác"}",
-                    value: component.name,
+      
+      child: InkWell(
+        onTap: () => onTap?.call(component),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildInfoBlock(
+                      label:
+                          "Phân loại: ${SupabaseDatabaseController.categoryMapCached[component.categoryID]['name'] ?? "Khác"}",
+                      value: component.name,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 60,),
-                _buildWarningBadge()
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildInfoBlock(
-                  label: "Vị trí",
-                  value:
-                      SupabaseDatabaseController.locationMapCached[component
-                          .locationID]['name'] ??
-                      "Không rõ",
-                ),
-                _buildInfoBlock(
-                  label: "Số lượng",
-                  value: component.quantity.toString(),
-                  valueSize: 32,
-                  valueColor: component.isLowStock
-                      ? AppColor.errorColor
-                      : AppColor.greenSafeColor,
-                  alignment: CrossAxisAlignment.end,
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 60,),
+                  _buildWarningBadge()
+                ],
+              ),
+        
+              const SizedBox(height: 20),
+        
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildInfoBlock(
+                    label: "Vị trí",
+                    value:
+                        SupabaseDatabaseController.locationMapCached[component
+                            .locationID]['name'] ??
+                        "Không rõ",
+                  ),
+                  _buildInfoBlock(
+                    label: "Số lượng",
+                    value: component.quantity.toString(),
+                    valueSize: 32,
+                    valueColor: component.isLowStock
+                        ? AppColor.errorColor
+                        : AppColor.greenSafeColor,
+                    alignment: CrossAxisAlignment.end,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

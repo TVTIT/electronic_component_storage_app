@@ -10,11 +10,13 @@ class AddComponentInfoCard extends StatefulWidget {
     required this.component,
     required this.onQuantityChanged,
     required this.onDelete,
+    this.isExportScreen = false,
   });
 
   final Component component;
   final ValueChanged<int> onQuantityChanged;
   final VoidCallback onDelete;
+  final bool isExportScreen;
 
   @override
   State<AddComponentInfoCard> createState() => _AddComponentInfoCardState();
@@ -112,6 +114,7 @@ class _AddComponentInfoCardState extends State<AddComponentInfoCard> {
         QuantityStepper(
           onChanged: widget.onQuantityChanged,
           initialValue: widget.component.quantity,
+          maxValue: widget.isExportScreen ? widget.component.quantity : 99999,
         ),
         IconButton(
           onPressed: widget.onDelete,

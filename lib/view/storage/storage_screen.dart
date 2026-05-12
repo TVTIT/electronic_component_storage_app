@@ -9,17 +9,23 @@ import 'package:electronic_component_storage_app/view/storage/category_filter_wi
 import 'package:electronic_component_storage_app/view/storage/component_info_card.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/string_extension.dart';
+import 'package:electronic_component_storage_app/view/storage/export_screen/export_component_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class StorageScreen extends StatefulWidget {
-  const StorageScreen({super.key});
+  const StorageScreen({super.key, this.isExportScreen = false});
+
+  final bool isExportScreen;
 
   @override
   State<StorageScreen> createState() => _StorageScreenState();
 }
 
 class _StorageScreenState extends State<StorageScreen> {
+  String _title = "Kho linh kiện";
+  Icon? _appBarIcon = const Icon(Icons.inventory);
+
   String _categorySelected = "all";
 
   bool _showCategoryFilter = true;
@@ -58,11 +64,29 @@ class _StorageScreenState extends State<StorageScreen> {
             .toList();
       }
     }
+
+    if (widget.isExportScreen) {
+      _displayListNotifier.value = List.from(
+        _displayListNotifier.value
+            .where((component) => component.quantity > 0)
+            .toList(),
+      );
+    }
+  }
+
+  void _onTapInfoCard(Component component) {
+    if (widget.isExportScreen) {
+      Navigator.of(context).pop(component);
+    }
   }
 
   @override
   void initState() {
-    _displayListNotifier.value = SupabaseDatabaseController.listComponentCached;
+    if (widget.isExportScreen) {
+      _title = "Chọn linh kiện";
+      _appBarIcon = null;
+    }
+    _chanegDisplayList();
     super.initState();
   }
 
@@ -77,66 +101,76 @@ class _StorageScreenState extends State<StorageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(icon: Icon(Icons.inventory), title: "Kho linh kiện"),
+      appBar: MyAppBar(icon: _appBarIcon, title: _title),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: AnimatedOpacity(
-        opacity: _isScrolling ? 0.3 : 1,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        child: ExpandableFab(
-          key: _fabKey,
-          distance: 70,
-          childrenAnimation: ExpandableFabAnimation.none,
-          type: ExpandableFabType.up,
-          overlayStyle: ExpandableFabOverlayStyle(blur: 8),
-          openButtonBuilder: DefaultFloatingActionButtonBuilder(
-            backgroundColor: AppColor.primaryColor,
-            foregroundColor: Colors.white,
-            child: Icon(Icons.menu),
-          ),
-          closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-            backgroundColor: AppColor.primaryColor,
-            foregroundColor: Colors.white,
-            child: Icon(Icons.close),
-          ),
-          children: [
-            FloatingActionButton.extended(
-              heroTag: null,
-              backgroundColor: AppColor.primaryColor,
-              foregroundColor: Colors.white,
-              label: const Text("Xuất linh kiện"),
-              icon: Icon(Icons.outbox),
-              onPressed: () async {
-                final fabState = _fabKey.currentState;
-                if (fabState != null && fabState.isOpen) {
-                  fabState.toggle();
-                }
-              },
-            ),
-            FloatingActionButton.extended(
-              heroTag: null,
-              backgroundColor: AppColor.primaryColor,
-              foregroundColor: Colors.white,
-              label: const Text("Thêm linh kiện"),
-              icon: Icon(Icons.add_box_outlined),
-              onPressed: () async {
-                final fabState = _fabKey.currentState;
-                if (fabState != null && fabState.isOpen) {
-                  fabState.toggle();
-                }
-                final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AddComponentScreen(),
+      floatingActionButton: widget.isExportScreen
+          ? null
+          : AnimatedOpacity(
+              opacity: _isScrolling ? 0.3 : 1,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              child: ExpandableFab(
+                key: _fabKey,
+                distance: 70,
+                childrenAnimation: ExpandableFabAnimation.none,
+                type: ExpandableFabType.up,
+                overlayStyle: ExpandableFabOverlayStyle(blur: 8),
+                openButtonBuilder: DefaultFloatingActionButtonBuilder(
+                  backgroundColor: AppColor.primaryColor,
+                  foregroundColor: Colors.white,
+                  child: Icon(Icons.menu),
+                ),
+                closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+                  backgroundColor: AppColor.primaryColor,
+                  foregroundColor: Colors.white,
+                  child: Icon(Icons.close),
+                ),
+                children: [
+                  FloatingActionButton.extended(
+                    heroTag: null,
+                    backgroundColor: AppColor.primaryColor,
+                    foregroundColor: Colors.white,
+                    label: const Text("Xuất linh kiện"),
+                    icon: Icon(Icons.outbox),
+                    onPressed: () async {
+                      final fabState = _fabKey.currentState;
+                      if (fabState != null && fabState.isOpen) {
+                        fabState.toggle();
+                      }
+                      final result = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ExportComponentScreen(),
+                        ),
+                      );
+                      if (result == true) {
+                        _chanegDisplayList();
+                      }
+                    },
                   ),
-                );
-                if (result == true) {
-                  _chanegDisplayList();
-                }
-              },
+                  FloatingActionButton.extended(
+                    heroTag: null,
+                    backgroundColor: AppColor.primaryColor,
+                    foregroundColor: Colors.white,
+                    label: const Text("Thêm linh kiện"),
+                    icon: Icon(Icons.add_box_outlined),
+                    onPressed: () async {
+                      final fabState = _fabKey.currentState;
+                      if (fabState != null && fabState.isOpen) {
+                        fabState.toggle();
+                      }
+                      final result = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const AddComponentScreen(),
+                        ),
+                      );
+                      if (result == true) {
+                        _chanegDisplayList();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
         child: Column(
@@ -228,7 +262,10 @@ class _StorageScreenState extends State<StorageScreen> {
                       return ListView.builder(
                         itemCount: value.length,
                         itemBuilder: (context, index) {
-                          return ComponentInfoCard(component: value[index]);
+                          return ComponentInfoCard(
+                            component: value[index],
+                            onTap: _onTapInfoCard,
+                          );
                         },
                       );
                     },
