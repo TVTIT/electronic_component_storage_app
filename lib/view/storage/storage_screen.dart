@@ -14,10 +14,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class StorageScreen extends StatefulWidget {
-  const StorageScreen({super.key, this.isSelectScreen = false, this.showOutOfStockComponentInSelectScreen = false});
+  const StorageScreen({
+    super.key,
+    this.isSelectScreen = false,
+    this.showOutOfStockComponentInSelectScreen = false,
+    this.showLowAndOutOfStockComponent = false,
+  });
 
   final bool isSelectScreen;
   final bool showOutOfStockComponentInSelectScreen;
+  final bool showLowAndOutOfStockComponent;
 
   @override
   State<StorageScreen> createState() => _StorageScreenState();
@@ -66,21 +72,38 @@ class _StorageScreenState extends State<StorageScreen> {
       }
     }
 
-    if (widget.isSelectScreen && !widget.showOutOfStockComponentInSelectScreen) {
+    if (widget.isSelectScreen &&
+        !widget.showOutOfStockComponentInSelectScreen) {
       _displayListNotifier.value = List.from(
         _displayListNotifier.value
             .where((component) => component.quantity > 0)
             .toList(),
       );
     }
-  }
 
-  Future<void> _onTapInfoCard(Component component) async {}
+    if (widget.showLowAndOutOfStockComponent) {
+      _displayListNotifier.value = List.from(
+        _displayListNotifier.value
+            .where((component) => component.quantity < component.minThreshold)
+            .toList(),
+      );
+    }
+  }
 
   @override
   void initState() {
+    if (widget.showLowAndOutOfStockComponent &&
+        (widget.isSelectScreen ||
+            widget.showOutOfStockComponentInSelectScreen)) {
+      throw Exception(
+        "(widget.showLowAndOutOfStockComponent && (widget.isSelectScreen || widget.showOutOfStockComponentInSelectScreen)) is not false",
+      );
+    }
     if (widget.isSelectScreen) {
       _title = "Chọn linh kiện";
+      _appBarIcon = null;
+    } else if (widget.showLowAndOutOfStockComponent) {
+      _title = "Linh kiện cần bổ sung";
       _appBarIcon = null;
     }
     _chanegDisplayList();
@@ -100,7 +123,8 @@ class _StorageScreenState extends State<StorageScreen> {
     return Scaffold(
       appBar: MyAppBar(icon: _appBarIcon, title: _title),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: widget.isSelectScreen
+      floatingActionButton:
+          widget.isSelectScreen || widget.showLowAndOutOfStockComponent
           ? null
           : AnimatedOpacity(
               opacity: _isScrolling ? 0.3 : 1,
@@ -279,7 +303,9 @@ class _StorageScreenState extends State<StorageScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Center(
-                                          child: Text("Cập nhật thông tin thành công"),
+                                          child: Text(
+                                            "Cập nhật thông tin thành công",
+                                          ),
                                         ),
                                       ),
                                     );

@@ -1,12 +1,14 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/dashboard/need_supplement_screen.dart';
 import 'package:flutter/material.dart';
 
 class RestockItemsWidget extends StatelessWidget {
   const RestockItemsWidget({super.key});
 
-  Widget _buildRestockItem({
+  Widget _buildRestockItem(
+    BuildContext context, {
     required String iconUrl,
     required String name,
     required int quanity,
@@ -59,7 +61,13 @@ class RestockItemsWidget extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const NeedSupplementScreen(),
+                ),
+              );
+            },
             style: IconButton.styleFrom(
               backgroundColor: AppColor.primaryContainer,
               foregroundColor: Colors.white,
@@ -110,7 +118,14 @@ class RestockItemsWidget extends StatelessWidget {
               ],
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NeedSupplementScreen(),
+                  ),
+                );
+              },
               child: const Text(
                 "XEM TẤT CẢ",
                 style: TextStyle(
@@ -128,6 +143,7 @@ class RestockItemsWidget extends StatelessWidget {
           children: displayList
               .map(
                 (component) => _buildRestockItem(
+                  context,
                   iconUrl: SupabaseDatabaseController
                       .categoryMapCached[component.categoryID]['image_url'],
                   name: component.name,
