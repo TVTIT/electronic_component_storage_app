@@ -60,22 +60,6 @@ class RestockItemsWidget extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const NeedSupplementScreen(),
-                ),
-              );
-            },
-            style: IconButton.styleFrom(
-              backgroundColor: AppColor.primaryContainer,
-              foregroundColor: Colors.white,
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(12),
-            ),
-            icon: const Icon(Icons.add, size: 20),
-          ),
         ],
       ),
     );
