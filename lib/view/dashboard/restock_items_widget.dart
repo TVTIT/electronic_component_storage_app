@@ -70,7 +70,6 @@ class RestockItemsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Component> displayList = SupabaseDatabaseController.listComponentCached
         .where((item) => item.isLowStock)
-        .take(2)
         .toList();
     if (displayList.isEmpty) {
       return const SizedBox.shrink();
@@ -92,8 +91,8 @@ class RestockItemsWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  "Linh kiện cần bổ sung",
+                Text(
+                  "Linh kiện cần bổ sung (${displayList.length})",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -132,6 +131,7 @@ class RestockItemsWidget extends StatelessWidget {
                   component: component
                 ),
               )
+              .take(2)
               .toList(),
         ),
       ],
