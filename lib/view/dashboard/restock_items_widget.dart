@@ -3,16 +3,17 @@ import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/dashboard/need_supplement_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RestockItemsWidget extends StatelessWidget {
   const RestockItemsWidget({super.key});
 
   Widget _buildRestockItem(
     BuildContext context, {
-    required String iconUrl,
-    required String name,
-    required int quanity,
+    required Component component
   }) {
+    final String imageUrl = SupabaseDatabaseController.categoryMapCached[component.categoryID]['image_url'];
+    final name = component.name;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(16),
@@ -31,7 +32,7 @@ class RestockItemsWidget extends StatelessWidget {
               color: const Color(0xFFEDEEEF),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Image.network(iconUrl),
+            child: Image.network(imageUrl),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -49,7 +50,7 @@ class RestockItemsWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  quanity == 0 ? "Hết hàng" : "Còn lại $quanity sản phẩm",
+                  component.quantity == 0 ? "Hết hàng" : "Còn lại ${component.quantity} sản phẩm",
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -128,10 +129,7 @@ class RestockItemsWidget extends StatelessWidget {
               .map(
                 (component) => _buildRestockItem(
                   context,
-                  iconUrl: SupabaseDatabaseController
-                      .categoryMapCached[component.categoryID]['image_url'],
-                  name: component.name,
-                  quanity: component.quantity,
+                  component: component
                 ),
               )
               .toList(),
