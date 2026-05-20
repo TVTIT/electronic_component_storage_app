@@ -5,10 +5,12 @@ class SupabaseDatabaseController {
   static final supabase = Supabase.instance.client;
 
   static List<Component> listComponentCached = [];
+  //Lấy toàn bộ danh sách linh kiện chưa xoá
   static Future<List<Component>> getAllComponent() async {
     List<Map> listMap = await supabase
         .from('components')
         .select()
+        .eq('deleted', false)
         .order('id', ascending: true);
     listComponentCached = listMap.map((map) => Component.fromMap(map)).toList();
     return listComponentCached;
@@ -96,5 +98,22 @@ class SupabaseDatabaseController {
     } else {
       throw Exception("component.id is null");
     }
+  }
+
+  static Future<void> softDeleteComponent(Component component) async {
+    if (component.id == null) {
+      throw Exception("component.id is null");
+    }
+    await supabase
+        .from('components')
+        .update({'deleted': true})
+        .eq('id', component.id!);
+  }
+  
+  static Future<void> softBulkDeleteComponent(List<Component> listComponents) async {
+    await supabase
+        .from('components')
+        .update({'deleted': true})
+        .inFilter('id', listComponents.map((component) => component.id).toList());
   }
 }

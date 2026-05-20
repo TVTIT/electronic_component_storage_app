@@ -12,6 +12,7 @@ import 'package:electronic_component_storage_app/string_extension.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/export_component_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StorageScreen extends StatefulWidget {
   const StorageScreen({
@@ -38,6 +39,8 @@ class _StorageScreenState extends State<StorageScreen> {
   bool _showCategoryFilter = true;
   bool _isScrolling = false;
   final _fabKey = GlobalKey<ExpandableFabState>();
+
+  bool _isDeleting = false;
 
   //List<Component> _displayList = [];
   final ValueNotifier<List<Component>> _displayListNotifier = ValueNotifier([]);
@@ -321,6 +324,160 @@ class _StorageScreenState extends State<StorageScreen> {
                 ),
               ),
             ),
+
+            widget.showLowAndOutOfStockComponent
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: DefaultTextStyle.of(context).style,
+                            children: [
+                              const TextSpan(text: "Tổng cộng: "),
+                              TextSpan(
+                                text: _displayListNotifier.value.length
+                                    .toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const TextSpan(text: " linh kiện"),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 5),
+
+                        StatefulBuilder(
+                          builder: (context, setDeleteButtonState) {
+                            if (_isDeleting) {
+                              return FilledButton(
+                                onPressed: () {},
+                                style: FilledButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 50),
+                                  backgroundColor: AppColor.errorColor,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              );
+                            }
+                            return FilledButton.icon(
+                              onPressed: () async {
+                                setDeleteButtonState(() {
+                                  _isDeleting = true;
+                                });
+
+                                final listOutStock = _displayListNotifier.value
+                                    .where((element) => element.quantity == 0)
+                                    .toList();
+
+                                if (listOutStock.isEmpty) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: const EdgeInsets.only(
+                                          bottom: 40,
+                                          left: 20,
+                                          right: 20,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 1500,
+                                        ),
+                                        content: Center(
+                                          child: const Text(
+                                            "Không có linh kiện nào hết hàng",
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  setDeleteButtonState(() {
+                                    _isDeleting = false;
+                                  });
+                                  return;
+                                }
+                                try {
+                                  await SupabaseDatabaseController.softBulkDeleteComponent(
+                                    listOutStock,
+                                  );
+                                  await SupabaseDatabaseController.getAllComponent();
+                                  _chanegDisplayList();
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: const EdgeInsets.only(
+                                          bottom: 40,
+                                          left: 20,
+                                          right: 20,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 1500,
+                                        ),
+                                        content: Center(
+                                          child: Text(
+                                            "Xoá thành công ${listOutStock.length} linh kiện",
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("Có lỗi xảy ra $e"),
+                                      ),
+                                    );
+                                  }
+                                }
+                                setDeleteButtonState(() {
+                                  _isDeleting = false;
+                                });
+                              },
+                              label: const Text("Xoá các linh kiện hết hàng"),
+                              icon: const Icon(Icons.delete_outline),
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 50),
+                                backgroundColor: AppColor.errorColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),
