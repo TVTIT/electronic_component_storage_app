@@ -10,9 +10,10 @@ class RestockItemsWidget extends StatelessWidget {
 
   Widget _buildRestockItem(
     BuildContext context, {
-    required Component component
+    required Component component,
   }) {
-    final String imageUrl = SupabaseDatabaseController.categoryMapCached[component.categoryID]['image_url'];
+    final String imageUrl = SupabaseDatabaseController
+        .categoryMapCached[component.categoryID]['image_url'];
     final name = component.name;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -50,7 +51,9 @@ class RestockItemsWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  component.quantity == 0 ? "Hết hàng" : "Còn lại ${component.quantity} sản phẩm",
+                  component.quantity == 0
+                      ? "Hết hàng"
+                      : "Còn lại ${component.quantity} sản phẩm",
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
@@ -80,43 +83,42 @@ class RestockItemsWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Container(
-                  width: 6,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF84000D),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  "Linh kiện cần bổ sung (${displayList.length})",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.onSurfaceColor,
-                  ),
-                ),
-              ],
+            Container(
+              width: 6,
+              height: 24,
+              decoration: BoxDecoration(
+                color: const Color(0xFF84000D),
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NeedSupplementScreen(),
+            const SizedBox(width: 8),
+            Text(
+              "Linh kiện cần bổ sung (${displayList.length})",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColor.onSurfaceColor,
+              ),
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NeedSupplementScreen(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "XEM TẤT CẢ",
+                  style: TextStyle(
+                    color: AppColor.primaryColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
                   ),
-                );
-              },
-              child: const Text(
-                "XEM TẤT CẢ",
-                style: TextStyle(
-                  color: AppColor.primaryColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
@@ -126,10 +128,7 @@ class RestockItemsWidget extends StatelessWidget {
         Column(
           children: displayList
               .map(
-                (component) => _buildRestockItem(
-                  context,
-                  component: component
-                ),
+                (component) => _buildRestockItem(context, component: component),
               )
               .take(2)
               .toList(),
