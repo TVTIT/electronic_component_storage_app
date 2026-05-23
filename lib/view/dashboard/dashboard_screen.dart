@@ -19,6 +19,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final userName = SupabaseAccountController.userName();
+    final List<Widget> listViewChildren = [
+      Text(
+        "Xin chào, $userName",
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+          color: Color(0xFF00464A),
+          letterSpacing: -0.5,
+        ),
+      ),
+      const SizedBox(height: 20),
+      StorageStatWidget(),
+      const SizedBox(height: 20),
+      RestockItemsWidget(),
+    ];
+    if (SupabaseAccountController.userRoleCached == 'admin' ||
+        SupabaseAccountController.userRoleCached == 'owner') {
+      listViewChildren.addAll([const SizedBox(height: 20), LocationWidget()]);
+    }
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.dashboard), title: "Dashboard"),
       body: RefreshIndicator(
@@ -28,23 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         },
         child: ListView(
           padding: const EdgeInsets.all(24.0),
-          children: [
-            Text(
-              "Xin chào, $userName",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF00464A),
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 20),
-            StorageStatWidget(),
-            const SizedBox(height: 20),
-            RestockItemsWidget(),
-            const SizedBox(height: 20),
-            LocationWidget(),
-          ],
+          children: listViewChildren,
         ),
       ),
     );
