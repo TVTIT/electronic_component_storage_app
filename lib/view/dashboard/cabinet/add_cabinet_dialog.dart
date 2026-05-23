@@ -117,6 +117,7 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
     return AlertDialog(
       backgroundColor: Colors.white,
       title: Text(_title),
+      scrollable: true,
       content: Form(
         key: _formKey,
         child: Column(
