@@ -47,6 +47,7 @@ class _CabinetManagementScreenState extends State<CabinetManagementScreen> {
   @override
   void dispose() {
     _searchDebounce?.cancel();
+    _displayListNotifier.dispose();
     super.dispose();
   }
 
