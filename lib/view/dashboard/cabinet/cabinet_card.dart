@@ -11,34 +11,35 @@ class CabinetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        final bool? result = await showDialog<bool>(
-          context: context,
-          builder: (context) => AddCabinetDialog(cabinet: cabinet,),
-        );
-        if (result != null && result) {
-          reloadDisplayList?.call();
-        }
-      },
-      child: Container(
-        margin: const EdgeInsets.only(right: 16, bottom: 16),
-        width: 160,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColor.outlineVariant.withValues(alpha: 0.5),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(right: 16, bottom: 16),
+      width: 160,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColor.outlineVariant.withValues(alpha: 0.5),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () async {
+          final bool? result = await showDialog<bool>(
+            context: context,
+            builder: (context) => AddCabinetDialog(cabinet: cabinet),
+          );
+          if (result != null && result) {
+            reloadDisplayList?.call();
+          }
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
