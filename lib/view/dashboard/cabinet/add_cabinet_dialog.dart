@@ -37,24 +37,30 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
           _isLoading = true;
         });
         await SupabaseDatabaseController.addLocation(newCabinet);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Thêm ngăn tủ mới thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text("Thêm ngăn tủ mới thành công")),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              duration: const Duration(milliseconds: 1500),
             ),
-            duration: const Duration(milliseconds: 1500),
-          ),
-        );
+          );
+        }
         await SupabaseDatabaseController.getAllLocation();
-        Navigator.of(context).pop(true);
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
-        Navigator.of(context).pop(false);
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
+          Navigator.of(context).pop(false);
+        }
       } finally {
         if (mounted) {
           setState(() {
@@ -74,24 +80,30 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
           _isLoading = true;
         });
         await SupabaseDatabaseController.editLocation(widget.cabinet!);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Sửa ngăn tủ thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Center(child: Text("Sửa ngăn tủ thành công")),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              duration: const Duration(milliseconds: 1500),
             ),
-            duration: const Duration(milliseconds: 1500),
-          ),
-        );
+          );
+        }
         await SupabaseDatabaseController.getAllLocation();
-        Navigator.of(context).pop(true);
+        if (mounted) {
+          Navigator.of(context).pop(true);
+        }
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
-        Navigator.of(context).pop(false);
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
+          Navigator.of(context).pop(false);
+        }
       } finally {
         if (mounted) {
           setState(() {
@@ -114,24 +126,30 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
         _isDeleting = true;
       });
       await SupabaseDatabaseController.deleteLocation(widget.cabinet!);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text("Xoá ngăn tủ thành công")),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Center(child: Text("Xoá ngăn tủ thành công")),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            duration: const Duration(milliseconds: 1500),
           ),
-          duration: const Duration(milliseconds: 1500),
-        ),
-      );
+        );
+      }
       await SupabaseDatabaseController.getAllLocation();
-      Navigator.of(context).pop(true);
+      if (mounted) {
+        Navigator.of(context).pop(true);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
-      Navigator.of(context).pop(false);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
+        Navigator.of(context).pop(false);
+      }
     } finally {
       if (mounted) {
         setState(() {
