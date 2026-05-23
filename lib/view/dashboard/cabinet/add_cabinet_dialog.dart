@@ -120,6 +120,7 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
         _errorMsg =
             "Ngăn tủ còn linh kiện. Vui lòng xoá hết linh kiện trước khi xoá ngăn tủ.";
       });
+      return;
     }
     try {
       setState(() {
