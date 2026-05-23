@@ -51,7 +51,10 @@ class SupabaseDatabaseController {
   static Map<String, dynamic> locationMapCached = {};
   static List<Cabinet> listCabinetCached = [];
   static Future<Map<String, dynamic>> getAllLocation() async {
-    final listMap = await supabase.from('location_stats').select().order('id', ascending: true);
+    final listMap = await supabase
+        .from('location_stats')
+        .select()
+        .order('id', ascending: true);
     listCabinetCached = listMap.map((map) => Cabinet.fromMap(map)).toList();
     locationMapCached = normalizeData(listMap);
     return locationMapCached;
@@ -68,6 +71,19 @@ class SupabaseDatabaseController {
     await supabase
         .from('locations')
         .update(cabinet.toMap())
+        .eq('id', cabinet.id!);
+  }
+
+  static Future<void> deleteLocation(Cabinet cabinet) async {
+    if (cabinet.id == null || cabinet.id!.isEmpty) {
+      throw Exception("cabinet.id is null or empty");
+    }
+    if (cabinet.totalItem > 0) {
+      throw Exception("cabinet.totalItem > 0 is not false");
+    }
+    await supabase
+        .from('locations')
+        .update({"deleted": true})
         .eq('id', cabinet.id!);
   }
 
