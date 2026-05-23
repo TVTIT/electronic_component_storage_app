@@ -1,4 +1,5 @@
 import 'package:electronic_component_storage_app/model/component.dart';
+import 'package:electronic_component_storage_app/model/cabinet.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseDatabaseController {
@@ -48,10 +49,42 @@ class SupabaseDatabaseController {
   }
 
   static Map<String, dynamic> locationMapCached = {};
+  static List<Cabinet> listCabinetCached = [];
   static Future<Map<String, dynamic>> getAllLocation() async {
-    final listMap = await supabase.from('locations').select();
+    final listMap = await supabase
+        .from('location_stats')
+        .select()
+        .order('id', ascending: true);
+    listCabinetCached = listMap.map((map) => Cabinet.fromMap(map)).toList();
     locationMapCached = normalizeData(listMap);
     return locationMapCached;
+  }
+
+  static Future<void> addLocation(Cabinet cabinet) async {
+    await supabase.from('locations').insert(cabinet.toMap());
+  }
+
+  static Future<void> editLocation(Cabinet cabinet) async {
+    if (cabinet.id == null || cabinet.id!.isEmpty) {
+      throw Exception("cabinet.id is null or empty");
+    }
+    await supabase
+        .from('locations')
+        .update(cabinet.toMap())
+        .eq('id', cabinet.id!);
+  }
+
+  static Future<void> deleteLocation(Cabinet cabinet) async {
+    if (cabinet.id == null || cabinet.id!.isEmpty) {
+      throw Exception("cabinet.id is null or empty");
+    }
+    if (cabinet.totalItem > 0) {
+      throw Exception("cabinet.totalItem > 0 is not false");
+    }
+    await supabase
+        .from('locations')
+        .update({"deleted": true})
+        .eq('id', cabinet.id!);
   }
 
   static Future<void> getInitialData() async {
@@ -109,11 +142,16 @@ class SupabaseDatabaseController {
         .update({'deleted': true})
         .eq('id', component.id!);
   }
-  
-  static Future<void> softBulkDeleteComponent(List<Component> listComponents) async {
+
+  static Future<void> softBulkDeleteComponent(
+    List<Component> listComponents,
+  ) async {
     await supabase
         .from('components')
         .update({'deleted': true})
-        .inFilter('id', listComponents.map((component) => component.id).toList());
+        .inFilter(
+          'id',
+          listComponents.map((component) => component.id).toList(),
+        );
   }
 }

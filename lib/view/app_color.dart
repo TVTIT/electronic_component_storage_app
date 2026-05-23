@@ -21,4 +21,5 @@ class AppColor {
   static const Color onGreyInputColor = Color(0xFF556474);
   static const Color greenSafeColor = Color(0xFF008000);
   static const Color surfaceContainerHighest = Color.fromARGB(255, 221, 228, 228);
+  static const Color onSurfaceVariant = Color(0xFF3F4949);
 }
