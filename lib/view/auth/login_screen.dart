@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _getDataAndNavigateHome() async {
-    await SupabaseAccountController.userRole();
+    await SupabaseAccountController.getAllUserData();
     await SupabaseDatabaseController.getInitialData();
     Navigator.pushNamedAndRemoveUntil(
       context,

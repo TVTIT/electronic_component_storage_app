@@ -1,3 +1,5 @@
+import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/model/my_user.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseAccountController {
@@ -6,14 +8,22 @@ class SupabaseAccountController {
     "same_password": "Mật khẩu mới không được trùng với mật khẩu cũ",
   };
 
-  static const Map<String, String> userRoleMap = {
-    "manager": "Nhân viên quản lý",
-    "admin": "Quản trị viên",
-    "owner": "Chủ sở hữu",
-  };
+  // static const Map<String, String> userRoleMap = {
+  //   "manager": "Nhân viên quản lý",
+  //   "admin": "Quản trị viên",
+  //   "owner": "Chủ sở hữu",
+  // };
 
   static final supabase = Supabase.instance.client;
   static final supabaseAuth = Supabase.instance.client.auth;
+
+  static Map<String, dynamic> rolesMapCached = {};
+  static Future<Map<String, dynamic>> getAllRoles() async {
+    final listMap = await supabase.from('roles').select();
+    rolesMapCached = SupabaseDatabaseController.normalizeData(listMap);
+    return rolesMapCached;
+  }
+
   static Map<String, dynamic> userData() {
     return supabaseAuth.currentUser?.userMetadata ?? {};
   }
@@ -36,7 +46,7 @@ class SupabaseAccountController {
   static Future<String> userRole() async {
     final user = supabaseAuth.currentUser;
     if (user == null) {
-      return userRoleMap.keys.first;
+      return 'manager';
     }
 
     final response = await supabase
@@ -47,6 +57,20 @@ class SupabaseAccountController {
 
     userRoleCached = response['role_id'] as String;
     return userRoleCached;
+  }
+
+  static late MyUser userCached;
+  static Future<MyUser> getAllUserData() async {
+    if (rolesMapCached.isEmpty) {
+      await getAllRoles();
+    }
+    userCached = MyUser(
+      id: userID(),
+      email: userEmail(),
+      fullName: userName(),
+      role: await userRole(),
+    );
+    return userCached;
   }
 
   static Future<void> updateUserData(Map<String, dynamic> data) async {
