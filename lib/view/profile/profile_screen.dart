@@ -45,10 +45,7 @@ class ProfileScreen extends StatelessWidget {
 
           TextFormField(
             readOnly: true,
-            initialValue:
-                SupabaseAccountController
-                    .rolesMapCached[SupabaseAccountController.userRoleCached]['name'] ??
-                'Nhân viên quản lý',
+            initialValue: currentUser.roleName,
           ),
 
           const SizedBox(height: 15),

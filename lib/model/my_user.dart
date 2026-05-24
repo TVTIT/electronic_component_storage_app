@@ -1,3 +1,5 @@
+import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
+
 class MyUser {
   MyUser({
     this.id,
@@ -6,12 +8,15 @@ class MyUser {
     required this.role,
     this.createdAt,
     this.lastSignInAt,
-  });
+  }) : roleName =
+           SupabaseAccountController.rolesMapCached[role]['name'] ??
+           "Nhân viên quản lý";
 
   final String? id;
   final String email;
   final String fullName;
   final String role;
+  final String? roleName;
   final DateTime? createdAt;
   final DateTime? lastSignInAt;
 
