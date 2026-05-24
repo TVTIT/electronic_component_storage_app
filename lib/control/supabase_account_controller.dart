@@ -84,4 +84,35 @@ class SupabaseAccountController {
   static Future<void> updateUserPassword(String newPassword) async {
     await supabaseAuth.updateUser(UserAttributes(password: newPassword));
   }
+
+  //Lấy toàn bộ user trong hệ thống (dành cho role owner)
+  static List<MyUser> allUserList = [];
+  static Future<List<MyUser>> getAllUserInSystem() async {
+    if (userCached.role != 'owner') {
+      throw Exception("user role is not owner");
+    }
+    final List<Map<String, dynamic>> listMap = await supabase.rpc(
+      'get_all_users_directory',
+    );
+    allUserList = listMap.map((e) => MyUser.fromMap(e)).toList();
+    return allUserList;
+  }
+
+  static Future<void> deleteUser(String userID) async {
+    await Supabase.instance.client.rpc(
+      'delete_user_by_owner',
+      params: {'target_uid': userID},
+    );
+  }
+
+  static Future<void> updateUserDataByOwner(MyUser user) async {
+    await Supabase.instance.client.rpc(
+      'update_user_info_by_owner',
+      params: {
+        'target_uid': user.id,
+        'new_full_name': user.fullName,
+        'new_role_id': user.role, 
+      }
+    );
+  }
 }

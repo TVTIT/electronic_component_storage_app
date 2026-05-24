@@ -121,6 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _getDataAndNavigateHome() async {
     await SupabaseAccountController.getAllUserData();
     await SupabaseDatabaseController.getInitialData();
+    if (SupabaseAccountController.userCached.role == 'owner') {
+      await SupabaseAccountController.getAllUserInSystem();
+    }
     Navigator.pushNamedAndRemoveUntil(
       context,
       '/home',

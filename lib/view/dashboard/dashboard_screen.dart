@@ -4,6 +4,7 @@ import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/dashboard/location_widget.dart';
 import 'package:electronic_component_storage_app/view/dashboard/restock_items_widget.dart';
 import 'package:electronic_component_storage_app/view/dashboard/storage_stat_widget.dart';
+import 'package:electronic_component_storage_app/view/dashboard/user_list_widget.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,6 +38,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (SupabaseAccountController.userRoleCached == 'admin' ||
         SupabaseAccountController.userRoleCached == 'owner') {
       listViewChildren.addAll([const SizedBox(height: 20), LocationWidget()]);
+    }
+    if (SupabaseAccountController.userRoleCached == 'owner') {
+      listViewChildren.addAll([const SizedBox(height: 20), UserListWidget()]);
     }
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.dashboard), title: "Dashboard"),

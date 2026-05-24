@@ -16,7 +16,7 @@ class MyUser {
   final String email;
   final String fullName;
   final String role;
-  final String? roleName;
+  final String roleName;
   final DateTime? createdAt;
   final DateTime? lastSignInAt;
 
@@ -26,8 +26,8 @@ class MyUser {
       email: data['email'] as String,
       fullName: data['full_name'] ?? 'Người dùng chưa đặt tên',
       role: data['role'] ?? 'manager',
-      createdAt: DateTime.tryParse(data['created_at']),
-      lastSignInAt: DateTime.tryParse(data['last_sign_in_at']),
+      createdAt: DateTime.tryParse(data['created_at'] ?? ""),
+      lastSignInAt: DateTime.tryParse(data['last_sign_in_at'] ?? ""),
     );
   }
 
