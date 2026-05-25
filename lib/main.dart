@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final session = Supabase.instance.client.auth.currentSession;
     return MaterialApp(
-      title: "Quản lý linh kiện điện tử",
+      title: "Component Vault",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0x00006064)),
         scaffoldBackgroundColor: AppColor.surfaceColor,

@@ -1,4 +1,4 @@
-package com.example.electronic_component_storage_app
+package com.example.componentvault
 
 import io.flutter.embedding.android.FlutterActivity
 
