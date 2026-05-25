@@ -1,7 +1,6 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
-import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/quantity_stepper.dart';
 import 'package:flutter/material.dart';
 

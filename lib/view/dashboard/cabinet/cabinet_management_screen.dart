@@ -8,7 +8,6 @@ import 'package:electronic_component_storage_app/view/dashboard/cabinet/add_cabi
 import 'package:electronic_component_storage_app/view/dashboard/cabinet/cabinet_card.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class CabinetManagementScreen extends StatefulWidget {
   const CabinetManagementScreen({super.key});

@@ -1,13 +1,11 @@
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/model/my_user.dart';
-import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/profile/change_user_password_screen.dart';
 import 'package:electronic_component_storage_app/view/profile/editable_user_display_name.dart';
 import 'package:electronic_component_storage_app/view/profile/logout_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

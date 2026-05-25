@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/auth/forgot_password_screen.dart';
 import 'package:electronic_component_storage_app/view/home_screen.dart';

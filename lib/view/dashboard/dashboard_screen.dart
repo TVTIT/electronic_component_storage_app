@@ -1,13 +1,11 @@
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
-import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/dashboard/location_widget.dart';
 import 'package:electronic_component_storage_app/view/dashboard/restock_items_widget.dart';
 import 'package:electronic_component_storage_app/view/dashboard/storage_stat_widget.dart';
 import 'package:electronic_component_storage_app/view/dashboard/user_list_widget.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

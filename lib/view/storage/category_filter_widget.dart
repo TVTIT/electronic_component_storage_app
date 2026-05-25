@@ -1,5 +1,4 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
-import 'package:electronic_component_storage_app/model/Component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 

@@ -4,7 +4,6 @@ import 'package:electronic_component_storage_app/view/adaptive_text.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/dashboard/need_supplement_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RestockItemsWidget extends StatelessWidget {
   const RestockItemsWidget({super.key});

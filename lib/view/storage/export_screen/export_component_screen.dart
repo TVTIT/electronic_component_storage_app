@@ -2,12 +2,9 @@ import 'package:electronic_component_storage_app/control/supabase_database_contr
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
-import 'package:electronic_component_storage_app/view/storage/add_component/add_component_form.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_info_card.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ExportComponentScreen extends StatefulWidget {
   const ExportComponentScreen({super.key});

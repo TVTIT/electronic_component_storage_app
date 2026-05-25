@@ -1,7 +1,6 @@
 //Copy từ EditableUserDisplayName của FirebaseUI
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditableUserDisplayName extends StatefulWidget {
   const EditableUserDisplayName({super.key});

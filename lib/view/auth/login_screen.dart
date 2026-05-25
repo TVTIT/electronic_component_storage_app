@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/splash_screen.dart';
-import 'package:electronic_component_storage_app/view/home_screen.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -82,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await Supabase.instance.client.auth.refreshSession();
       //await Supabase.instance.client.auth.getUser();
       await _getDataAndNavigateHome();
-    } on AuthException catch (e) {
+    } on AuthException {
       if (mounted) {
         final session = Supabase.instance.client.auth.currentSession;
         if (session != null) {
