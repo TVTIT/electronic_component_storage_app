@@ -1,5 +1,6 @@
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/model/my_user.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -38,17 +39,7 @@ class _UserAddNewScreenState extends State<UserAddNewScreen> {
       await SupabaseAccountController.createNewUserByOwner(newUser);
       await SupabaseAccountController.getAllUserInSystem();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Tạo tài khoản thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(milliseconds: 1500),
-          ),
-        );
+        CustomWidget.showFloatingSnackbar(context, text: "Tạo tài khoản thành công");
         Navigator.pop(context, true);
       }
     } catch (e) {

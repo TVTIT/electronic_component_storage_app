@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_screen.dart';
 import 'package:electronic_component_storage_app/view/storage/category_filter_widget.dart';
@@ -301,14 +302,9 @@ class _StorageScreenState extends State<StorageScreen> {
                                 if (result != null && result) {
                                   _chanegDisplayList();
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Center(
-                                          child: Text(
-                                            "Cập nhật thông tin thành công",
-                                          ),
-                                        ),
-                                      ),
+                                    CustomWidget.showFloatingSnackbar(
+                                      context,
+                                      text: "Cập nhật thông tin thành công",
                                     );
                                   }
                                 }
@@ -383,28 +379,9 @@ class _StorageScreenState extends State<StorageScreen> {
 
                                 if (listOutStock.isEmpty) {
                                   if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        behavior: SnackBarBehavior.floating,
-                                        margin: const EdgeInsets.only(
-                                          bottom: 40,
-                                          left: 20,
-                                          right: 20,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        duration: const Duration(
-                                          milliseconds: 1500,
-                                        ),
-                                        content: Center(
-                                          child: const Text(
-                                            "Không có linh kiện nào hết hàng",
-                                          ),
-                                        ),
-                                      ),
+                                    CustomWidget.showFloatingSnackbar(
+                                      context,
+                                      text: "Không có linh kiện nào hết hàng",
                                     );
                                   }
                                   setDeleteButtonState(() {
@@ -419,28 +396,10 @@ class _StorageScreenState extends State<StorageScreen> {
                                   await SupabaseDatabaseController.getAllComponent();
                                   _chanegDisplayList();
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        behavior: SnackBarBehavior.floating,
-                                        margin: const EdgeInsets.only(
-                                          bottom: 40,
-                                          left: 20,
-                                          right: 20,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        duration: const Duration(
-                                          milliseconds: 1500,
-                                        ),
-                                        content: Center(
-                                          child: Text(
-                                            "Xoá thành công ${listOutStock.length} linh kiện",
-                                          ),
-                                        ),
-                                      ),
+                                    CustomWidget.showFloatingSnackbar(
+                                      context,
+                                      text:
+                                          "Xoá thành công ${listOutStock.length} linh kiện",
                                     );
                                   }
                                 } catch (e) {

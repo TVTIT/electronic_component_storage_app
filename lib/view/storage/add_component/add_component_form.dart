@@ -1,6 +1,7 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -216,16 +217,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
           }
         } else {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(child: Text(_snackBarText)),
-                behavior: SnackBarBehavior.floating,
-                margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                duration: const Duration(milliseconds: 1500),
-              ),
+            CustomWidget.showFloatingSnackbar(
+              context,
+              text: _snackBarText,
             );
           }
           Navigator.pop(context, newComponent);

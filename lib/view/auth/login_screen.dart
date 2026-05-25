@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/splash_screen.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -38,16 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
         await _getDataAndNavigateHome();
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text("Đăng nhập thành công")),
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              duration: const Duration(milliseconds: 1500),
-            ),
+          CustomWidget.showFloatingSnackbar(
+            context,
+            text: "Đăng nhập thành công",
           );
         }
       } on AuthException catch (e) {
@@ -86,19 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (session != null) {
           await Supabase.instance.client.auth.signOut();
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(
-                  child: Text(
-                    "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại",
-                  ),
-                ),
-                behavior: SnackBarBehavior.floating,
-                margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+            CustomWidget.showFloatingSnackbar(
+              context,
+              text: "Phiên đăng nhập không hợp lệ, vui lòng thử lại",
             );
           }
         }

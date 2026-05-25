@@ -1,5 +1,6 @@
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/model/my_user.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -56,16 +57,9 @@ class _UserEdtiInfoScreenState extends State<UserEdtiInfoScreen> {
       await SupabaseAccountController.getAllUserInSystem();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Lưu thông tin người dùng thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(milliseconds: 1500),
-          ),
+        CustomWidget.showFloatingSnackbar(
+          context,
+          text: "Lưu thông tin người dùng thành công",
         );
         Navigator.pop(context, true);
       }
@@ -118,16 +112,9 @@ class _UserEdtiInfoScreenState extends State<UserEdtiInfoScreen> {
       await SupabaseAccountController.deleteUser(widget.user.id!);
       await SupabaseAccountController.getAllUserInSystem();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Xoá người dùng thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(milliseconds: 1500),
-          ),
+        CustomWidget.showFloatingSnackbar(
+          context,
+          text: "Xoá người dùng thành công",
         );
         Navigator.pop(context, true);
       }

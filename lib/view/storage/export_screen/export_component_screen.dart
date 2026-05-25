@@ -1,6 +1,7 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_info_card.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
@@ -75,16 +76,9 @@ class _ExportComponentScreenState extends State<ExportComponentScreen> {
 
   Future<void> _exportComponent() async {
     if (_listExportListen.value.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: const Text("Bạn chưa thêm linh kiện nào")),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          duration: const Duration(milliseconds: 1500),
-        ),
+      CustomWidget.showFloatingSnackbar(
+        context,
+        text: "Bạn chưa thêm linh kiện nào",
       );
       return;
     }
@@ -95,20 +89,10 @@ class _ExportComponentScreenState extends State<ExportComponentScreen> {
       await SupabaseDatabaseController.exportBulkComponent(_listExportListen.value);
       await SupabaseDatabaseController.getAllComponent();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(
-              child: Text(
-                "Xuất kho thành công ${_listExportListen.value.length} linh kiện",
-              ),
-            ),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(milliseconds: 1500),
-          ),
+        CustomWidget.showFloatingSnackbar(
+          context,
+          text:
+              "Xuất kho thành công ${_listExportListen.value.length} linh kiện",
         );
 
         Navigator.pop(context, true);

@@ -1,6 +1,7 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/cabinet.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:flutter/material.dart';
 
 class AddCabinetDialog extends StatefulWidget {
@@ -38,17 +39,7 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
         });
         await SupabaseDatabaseController.addLocation(newCabinet);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text("Thêm ngăn tủ mới thành công")),
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              duration: const Duration(milliseconds: 1500),
-            ),
-          );
+          CustomWidget.showFloatingSnackbar(context, text: "Thêm ngăn tủ mới thành công");
         }
         await SupabaseDatabaseController.getAllLocation();
         if (mounted) {
@@ -81,17 +72,10 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
         });
         await SupabaseDatabaseController.editLocation(widget.cabinet!);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(child: Text("Sửa ngăn tủ thành công")),
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              duration: const Duration(milliseconds: 1500),
-            ),
-          );
+          CustomWidget.showFloatingSnackbar(
+              context,
+              text: "Sửa ngăn tủ thành công",
+            );
         }
         await SupabaseDatabaseController.getAllLocation();
         if (mounted) {
@@ -128,17 +112,10 @@ class _AddCabinetDialogState extends State<AddCabinetDialog> {
       });
       await SupabaseDatabaseController.deleteLocation(widget.cabinet!);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Center(child: Text("Xoá ngăn tủ thành công")),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(milliseconds: 1500),
-          ),
-        );
+        CustomWidget.showFloatingSnackbar(
+              context,
+              text: "Xóa ngăn tủ thành công",
+            );
       }
       await SupabaseDatabaseController.getAllLocation();
       if (mounted) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:electronic_component_storage_app/view/custom_widget.dart';
 
 class LogoutButton extends StatefulWidget {
   const LogoutButton({super.key});
@@ -18,17 +19,7 @@ class _LogoutButtonState extends State<LogoutButton> {
 
     await Supabase.instance.client.auth.signOut();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Center(child: Text("Đăng xuất thành công")),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          duration: const Duration(milliseconds: 1500),
-        ),
-      );
+      CustomWidget.showFloatingSnackbar(context, text: "Đăng xuất thành công");
       Navigator.of(
         context,
         rootNavigator: true,
