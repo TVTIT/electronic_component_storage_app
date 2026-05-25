@@ -57,8 +57,7 @@ class _UserAddNewScreenState extends State<UserAddNewScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
       }
-    }
-    finally {
+    } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -86,6 +85,9 @@ class _UserAddNewScreenState extends State<UserAddNewScreen> {
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(hintText: "Nhập tên người dùng"),
+              textInputAction: TextInputAction.next,
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Tên người dùng là bắt buộc";
@@ -104,6 +106,9 @@ class _UserAddNewScreenState extends State<UserAddNewScreen> {
                 prefixIcon: Icon(Icons.email),
               ),
               keyboardType: TextInputType.emailAddress,
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              textInputAction: TextInputAction.next,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Email không được bỏ trống";
@@ -126,6 +131,8 @@ class _UserAddNewScreenState extends State<UserAddNewScreen> {
             TextFormField(
               obscureText: _obscurePassword,
               controller: _passwordController,
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
               decoration: InputDecoration(
                 hintText: "Nhập mật khẩu",
                 prefixIcon: Icon(Icons.lock),
