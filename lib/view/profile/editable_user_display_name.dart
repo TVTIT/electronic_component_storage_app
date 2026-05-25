@@ -48,7 +48,7 @@ class _EditableUserDisplayNameState extends State<EditableUserDisplayName> {
   }
 
   Future<void> _getUserDisplayName() async {
-    String result = SupabaseAccountController.userName();
+    String result = SupabaseAccountController.userCached.fullName;
 
     if (!mounted) {
       return;

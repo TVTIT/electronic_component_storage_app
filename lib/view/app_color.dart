@@ -4,6 +4,7 @@ class AppColor {
   static const Color surfaceColor = Color(0xFFF8F9FA);
   static const Color onSurfaceColor = Color(0xFF191C1D);
   static const Color primaryColor = Color(0xFF006064);
+  static const Color primaryDarkColor = Color(0xFF00464A);
   static const Color primaryContainer = Color(0xFF006064);
   static const Color onPrimaryContainer = Color(0xFF8FD8DC);
   static const Color errorColor = Color(0xFFBA1A1A);

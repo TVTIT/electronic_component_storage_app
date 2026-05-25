@@ -1,4 +1,5 @@
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
+import 'package:electronic_component_storage_app/model/my_user.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/profile/change_user_password_screen.dart';
@@ -13,7 +14,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userID = SupabaseAccountController.userID();
+    final MyUser currentUser = SupabaseAccountController.userCached;
+
     return Scaffold(
       appBar: MyAppBar(icon: Icon(Icons.person), title: "Tài khoản"),
       body: ListView(
@@ -43,13 +45,7 @@ class ProfileScreen extends StatelessWidget {
 
           TextFormField(
             readOnly: true,
-            initialValue:
-                SupabaseAccountController.userRoleMap[SupabaseAccountController
-                    .userRoleCached] ??
-                SupabaseAccountController
-                    .userRoleMap
-                    .values
-                    .first,
+            initialValue: currentUser.roleName,
           ),
 
           const SizedBox(height: 15),
@@ -58,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
 
           TextFormField(
             readOnly: true,
-            initialValue: SupabaseAccountController.userEmail(),
+            initialValue: currentUser.email
           ),
 
           const SizedBox(height: 15),
@@ -94,11 +90,11 @@ class ProfileScreen extends StatelessWidget {
           TextFormField(
             readOnly: true,
             textAlignVertical: TextAlignVertical.center,
-            initialValue: userID,
+            initialValue: currentUser.id,
             decoration: InputDecoration(
               suffixIcon: IconButton(
                 onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: userID));
+                  await Clipboard.setData(ClipboardData(text: currentUser.id ?? ""));
                   const snackBar = SnackBar(
                     content: Text('Đã copy ID người dùng vào clipboard'),
                   );
