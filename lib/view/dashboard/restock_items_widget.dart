@@ -1,5 +1,6 @@
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
+import 'package:electronic_component_storage_app/view/adaptive_text.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/dashboard/need_supplement_screen.dart';
 import 'package:flutter/material.dart';
@@ -92,33 +93,41 @@ class RestockItemsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Text(
-              "Linh kiện cần bổ sung (${displayList.length})",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColor.onSurfaceColor,
+            // Text(
+            //   "Linh kiện cần bổ sung (${displayList.length})",
+            //   style: TextStyle(
+            //     fontSize: 18,
+            //     fontWeight: FontWeight.bold,
+            //     color: AppColor.onSurfaceColor,
+            //   ),
+            // ),
+            Expanded(
+              child: AdaptiveText(
+                fullText: "Linh kiện cần bổ sung (${displayList.length})",
+                shortText: "L.kiện cần bổ sung (${displayList.length})",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColor.onSurfaceColor,
+                ),
               ),
             ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NeedSupplementScreen(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  "XEM TẤT CẢ",
-                  style: TextStyle(
-                    color: AppColor.primaryColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NeedSupplementScreen(),
                   ),
-                  textAlign: TextAlign.center,
+                );
+              },
+              child: const Text(
+                "XEM TẤT CẢ",
+                style: TextStyle(
+                  color: AppColor.primaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
                 ),
               ),
             ),
