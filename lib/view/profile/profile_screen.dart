@@ -41,19 +41,13 @@ class ProfileScreen extends StatelessWidget {
 
           const Text('Vai trò', style: TextStyle(fontWeight: FontWeight.bold)),
 
-          TextFormField(
-            readOnly: true,
-            initialValue: currentUser.roleName,
-          ),
+          TextFormField(readOnly: true, initialValue: currentUser.roleName),
 
           const SizedBox(height: 15),
 
           const Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
 
-          TextFormField(
-            readOnly: true,
-            initialValue: currentUser.email
-          ),
+          TextFormField(readOnly: true, initialValue: currentUser.email),
 
           const SizedBox(height: 15),
 
@@ -92,11 +86,16 @@ class ProfileScreen extends StatelessWidget {
             decoration: InputDecoration(
               suffixIcon: IconButton(
                 onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: currentUser.id ?? ""));
-                  const snackBar = SnackBar(
-                    content: Text('Đã copy ID người dùng vào clipboard'),
+                  await Clipboard.setData(
+                    ClipboardData(text: currentUser.id ?? ""),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Đã copy ID người dùng vào clipboard'),
+                      ),
+                    );
+                  }
                 },
                 icon: Icon(Icons.copy),
               ),

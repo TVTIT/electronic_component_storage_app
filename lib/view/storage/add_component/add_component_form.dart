@@ -211,7 +211,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
           newComponent.id = widget.component!.id;
           await SupabaseDatabaseController.updateComponent(newComponent);
           await SupabaseDatabaseController.getAllComponent();
-          Navigator.pop(context, true);
+          if (mounted) {
+            Navigator.pop(context, true);
+          }
         } else {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -411,7 +413,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
                           if (result != null) {
                             result.quantity = 1;
-                            Navigator.of(context).pop(result);
+                            if (context.mounted) {
+                              Navigator.of(context).pop(result);
+                            }
                           }
                         },
                         child: const Text("CHỌN LINH KIỆN CÓ SẴN"),

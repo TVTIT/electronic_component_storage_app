@@ -300,7 +300,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                 );
                                 if (result != null && result) {
                                   _chanegDisplayList();
-                                  if (mounted) {
+                                  if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Center(
@@ -418,7 +418,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                   );
                                   await SupabaseDatabaseController.getAllComponent();
                                   _chanegDisplayList();
-                                  if (mounted) {
+                                  if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         behavior: SnackBarBehavior.floating,
@@ -444,7 +444,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     );
                                   }
                                 } catch (e) {
-                                  if (mounted) {
+                                  if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text("Có lỗi xảy ra $e"),

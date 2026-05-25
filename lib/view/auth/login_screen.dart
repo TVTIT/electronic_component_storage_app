@@ -85,20 +85,22 @@ class _LoginScreenState extends State<LoginScreen> {
         final session = Supabase.instance.client.auth.currentSession;
         if (session != null) {
           await Supabase.instance.client.auth.signOut();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Center(
-                child: Text(
-                  "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại",
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Center(
+                  child: Text(
+                    "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại",
+                  ),
+                ),
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              behavior: SnackBarBehavior.floating,
-              margin: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
+            );
+          }
         }
         setState(() {
           _isLoadingData = false;
@@ -122,12 +124,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (SupabaseAccountController.userCached.role == 'owner') {
       await SupabaseAccountController.getAllUserInSystem();
     }
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/home',
-      (Route<dynamic> route) =>
-          false,
-    );
+    if (mounted) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/home',
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 
   @override
