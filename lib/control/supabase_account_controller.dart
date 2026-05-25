@@ -19,7 +19,11 @@ class SupabaseAccountController {
 
   static Map<String, dynamic> rolesMapCached = {};
   static Future<Map<String, dynamic>> getAllRoles() async {
-    final listMap = await supabase.from('roles').select();
+    final listMap = await supabase
+        .from('roles')
+        .select()
+        .order('priority')
+        .select();
     rolesMapCached = SupabaseDatabaseController.normalizeData(listMap);
     return rolesMapCached;
   }
@@ -111,8 +115,8 @@ class SupabaseAccountController {
       params: {
         'target_uid': user.id,
         'new_full_name': user.fullName,
-        'new_role_id': user.role, 
-      }
+        'new_role_id': user.role,
+      },
     );
   }
 }
