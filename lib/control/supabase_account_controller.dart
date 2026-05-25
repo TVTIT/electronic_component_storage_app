@@ -119,4 +119,16 @@ class SupabaseAccountController {
       },
     );
   }
+
+  static Future<void> createNewUserByOwner(MyUser newUser) async {
+    await Supabase.instance.client.rpc(
+      'create_user_by_owner',
+      params: {
+        'new_email': newUser.email,
+        'new_password': newUser.password,
+        'new_full_name': newUser.fullName,
+        'new_role_id': newUser.role,
+      },
+    );
+  }
 }

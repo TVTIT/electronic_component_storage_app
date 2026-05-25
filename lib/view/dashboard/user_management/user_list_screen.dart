@@ -4,6 +4,7 @@ import 'package:electronic_component_storage_app/control/supabase_account_contro
 import 'package:electronic_component_storage_app/model/my_user.dart';
 import 'package:electronic_component_storage_app/string_extension.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
+import 'package:electronic_component_storage_app/view/dashboard/user_management/user_add_new_screen.dart';
 import 'package:electronic_component_storage_app/view/dashboard/user_management/user_edit_info_screen.dart';
 import 'package:electronic_component_storage_app/view/dashboard/user_management/user_info_card.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
@@ -55,7 +56,14 @@ class _UserListScreenState extends State<UserListScreen> {
         icon: Icon(Icons.admin_panel_settings),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          final bool? result = await Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => UserAddNewScreen()));
+          if (result ?? false) {
+            _changeDisplayList();
+          }
+        },
         backgroundColor: AppColor.primaryContainer,
         foregroundColor: Colors.white,
         child: Icon(Icons.person_add),
