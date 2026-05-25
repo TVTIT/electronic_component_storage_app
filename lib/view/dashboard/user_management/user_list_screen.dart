@@ -20,7 +20,7 @@ class UserListScreen extends StatefulWidget {
 class _UserListScreenState extends State<UserListScreen> {
   final _searchController = TextEditingController();
   Timer? _searchDebounce;
-  ValueNotifier<List<MyUser>> _displayListNotifier = ValueNotifier([]);
+  final ValueNotifier<List<MyUser>> _displayListNotifier = ValueNotifier([]);
 
   void _changeDisplayList() {
     if (_searchController.text.isNotEmpty) {
