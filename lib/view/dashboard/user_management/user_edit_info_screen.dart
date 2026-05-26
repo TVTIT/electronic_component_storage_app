@@ -80,6 +80,13 @@ class _UserEdtiInfoScreenState extends State<UserEdtiInfoScreen> {
 
   // Luồng xử lý xóa người dùng
   Future<void> _deleteUser() async {
+    if (widget.user.id == SupabaseAccountController.userCached.id) {
+      CustomWidget.showFloatingSnackbar(
+        context,
+        text: "Bạn không được tự xóa tài khoản của chính mình",
+      );
+      return;
+    }
     // 1. Hiển thị Dialog xác nhận (Hành động phá hủy cần confirm)
     final confirm = await showDialog<bool>(
       context: context,
@@ -256,7 +263,7 @@ class _UserEdtiInfoScreenState extends State<UserEdtiInfoScreen> {
                         backgroundColor: theme.colorScheme.error,
                         foregroundColor: theme.colorScheme.onError,
                       ),
-                      onPressed: _isLoading ? null: _deleteUser,
+                      onPressed: _isLoading ? null : _deleteUser,
                       icon: const Icon(Icons.delete_forever),
                       label: const Text('Xoá người dùng'),
                     ),
