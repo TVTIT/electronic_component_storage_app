@@ -13,6 +13,7 @@ class Component {
     this.createdAt,
     this.updatedAt,
     required this.categoryID,
+    this.datasheetUrl
   }) : searchName = name.toLowerCase().toUnaccented().trim();
 
   String? id;
@@ -27,6 +28,7 @@ class Component {
   DateTime? createdAt;
   DateTime? updatedAt;
   String categoryID;
+  String? datasheetUrl;
 
   //static const minThreshold = 10;
   //static final DateTime _defaultTime = DateTime(2000);
@@ -46,6 +48,7 @@ class Component {
       createdAt: other.createdAt,
       updatedAt: other.updatedAt,
       categoryID: other.categoryID,
+      datasheetUrl: other.datasheetUrl
     );
   }
 
@@ -66,6 +69,7 @@ class Component {
       createdAt: createdAt,
       updatedAt: updatedAt,
       categoryID: data['category_id'],
+      datasheetUrl: data['datasheet_url']
     );
   }
 
@@ -82,6 +86,7 @@ class Component {
       'added_via_ai': addedViaAI,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'datasheet_url': datasheetUrl
     };
 
     // Xoá các giá trị null

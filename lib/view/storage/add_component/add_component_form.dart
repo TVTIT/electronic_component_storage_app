@@ -13,6 +13,8 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:validators/validators.dart';
 
 class AddComponentForm extends StatefulWidget {
   const AddComponentForm({
@@ -62,6 +64,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
   final _interfaceController = TextEditingController();
   final _sensorVoltageInController = TextEditingController();
   final _chipsetController = TextEditingController();
+
+  final _datasheetLinkKey = GlobalKey<FormFieldState>();
+  final _datasheetLinkController = TextEditingController();
 
   String? _selectedCategory;
   String? _selectedLocation;
@@ -119,6 +124,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
     _sensorVoltageInController.dispose();
     _chipsetController.dispose();
 
+    _datasheetLinkController.dispose();
+
     super.dispose();
   }
 
@@ -158,6 +165,10 @@ class _AddComponentFormState extends State<AddComponentForm> {
         _sensorVoltageInController.text = specs['voltage_in']?.toString() ?? '';
         _chipsetController.text = specs['chipset']?.toString() ?? '';
       }
+    }
+
+    if (component.datasheetUrl != null && component.datasheetUrl!.isNotEmpty) {
+      _datasheetLinkController.text = component.datasheetUrl!;
     }
   }
 
@@ -217,6 +228,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
           minThreshold: int.tryParse(_minQuantityController.text) ?? 10,
           specs: specs.isNotEmpty ? specs : null,
           imageUrl: await _uploadImage(),
+          datasheetUrl: _datasheetLinkController.text.isNotEmpty
+              ? _datasheetLinkController.text
+              : null,
         );
 
         if (widget.isFromStogareScreen) {
@@ -328,11 +342,42 @@ class _AddComponentFormState extends State<AddComponentForm> {
     return result;
   }
 
+  Future<void> _openDataSheetLink() async {
+    String urlString = _datasheetLinkController.text.trim();
+    if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
+      urlString = 'https://$urlString';
+    }
+    _datasheetLinkController.text = urlString;
+
+    if (!_datasheetLinkKey.currentState!.validate()) {
+      return;
+    }
+
+    final Uri url = Uri.parse(urlString);
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          CustomWidget.showFloatingSnackbar(context, text: "Không thể mở URL");
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        CustomWidget.showFloatingSnackbar(context, text: "Có lỗi xảy ra $e");
+      }
+    }
+  }
+
   Widget _buildTextField(
     String label,
     String hint,
     TextEditingController controller, {
+    GlobalKey<FormFieldState>? key,
     TextInputType keyboardType = TextInputType.text,
+    Widget? suffixIcon,
+    String? Function(String? value)? validator,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
@@ -342,10 +387,13 @@ class _AddComponentFormState extends State<AddComponentForm> {
           Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 5),
           TextFormField(
+            key: key,
             controller: controller,
             keyboardType: keyboardType,
             textInputAction: TextInputAction.next,
-            decoration: InputDecoration(hintText: hint),
+            decoration: InputDecoration(hintText: hint, suffixIcon: suffixIcon),
+            onTapOutside: (event) => FocusScope.of(context).unfocus(),
+            validator: validator,
           ),
         ],
       ),
@@ -453,6 +501,29 @@ class _AddComponentFormState extends State<AddComponentForm> {
     }
 
     return const SizedBox.shrink();
+  }
+
+  Widget _buildDatasheetLinkField() {
+    return _buildTextField(
+      "Link datasheet",
+      "Nhập link datasheet",
+      _datasheetLinkController,
+      key: _datasheetLinkKey,
+      keyboardType: TextInputType.url,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return null;
+        }
+        if (!isURL(value)) {
+          return "URL không hợp lệ";
+        }
+        return null;
+      },
+      suffixIcon: IconButton(
+        onPressed: _openDataSheetLink,
+        icon: Icon(Icons.open_in_new),
+      ),
+    );
   }
 
   @override
@@ -700,6 +771,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
             const SizedBox(height: 15),
 
             _buildDynamicSpecsForm(),
+
+            _buildDatasheetLinkField(),
 
             const SizedBox(height: 15),
 
