@@ -1,10 +1,18 @@
+import 'dart:io';
+
 import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
+import 'package:electronic_component_storage_app/control/supabase_storage_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
+import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AddComponentForm extends StatefulWidget {
   const AddComponentForm({
@@ -62,6 +70,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
   late String _title = "Thêm linh kiện mới";
   late String _buttonText = "Thêm linh kiện";
   late String _snackBarText = "Thêm linh kiện thành công";
+
+  File? _imageFile;
 
   @override
   void initState() {
@@ -206,6 +216,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
           categoryID: _selectedCategory!,
           minThreshold: int.tryParse(_minQuantityController.text) ?? 10,
           specs: specs.isNotEmpty ? specs : null,
+          imageUrl: await _uploadImage(),
         );
 
         if (widget.isFromStogareScreen) {
@@ -217,12 +228,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
           }
         } else {
           if (mounted) {
-            CustomWidget.showFloatingSnackbar(
-              context,
-              text: _snackBarText,
-            );
+            CustomWidget.showFloatingSnackbar(context, text: _snackBarText);
+            Navigator.pop(context, newComponent);
           }
-          Navigator.pop(context, newComponent);
         }
       } catch (e) {
         if (mounted) {
@@ -238,6 +246,86 @@ class _AddComponentFormState extends State<AddComponentForm> {
         }
       }
     }
+  }
+
+  Future<void> _selectComponentImage() async {
+    bool? isCamera = false;
+    if (mounted) {
+      isCamera = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt_rounded),
+                title: const Text("Camera"),
+                onTap: () => Navigator.pop(context, true),
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: const Text("Thư viện ảnh"),
+                onTap: () => Navigator.pop(context, false),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (isCamera == null) {
+      return;
+    }
+
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+      source: isCamera ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: 100, // Lấy chất lượng gốc trước để tự nén sau
+    );
+
+    if (pickedFile == null) {
+      return;
+    }
+
+    final File originalFile = File(pickedFile.path);
+
+    // Tạo đường dẫn file tạm (temp) để lưu ảnh nén
+    final Directory tempDir = await getTemporaryDirectory();
+    final String targetPath =
+        '${tempDir.path}/compressed_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    final XFile? compressedXFile =
+        await FlutterImageCompress.compressAndGetFile(
+          originalFile.absolute.path,
+          targetPath,
+          quality: 70, // Giảm chất lượng xuống 70% (mắt thường khó phân biệt)
+          minWidth: 1024, // Resize chiều ngang tối đa 1024px
+          minHeight: 1024, // Resize chiều dọc tối đa 1024px
+          format: CompressFormat.jpeg, // Ép chuẩn định dạng ảnh nhẹ nhất
+        );
+
+    if (compressedXFile == null) {
+      throw Exception('Lỗi hệ thống: Không thể nén ảnh.');
+    }
+
+    setState(() {
+      _imageFile = File(compressedXFile.path);
+    });
+  }
+
+  Future<String?> _uploadImage() async {
+    if (_imageFile == null) {
+      return null;
+    }
+    final result = await SupabaseStorageController.uploadFile(
+      bucket: 'component_image',
+      file: _imageFile!,
+    );
+
+    if (_imageFile!.existsSync()) {
+      _imageFile!.deleteSync();
+    }
+
+    return result;
   }
 
   Widget _buildTextField(
@@ -374,18 +462,92 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
     final showSelectExistComponent = widget.component == null;
 
+    Widget inkWellChild = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Icon Camera Circle
+        Container(
+          margin: const EdgeInsets.only(top: 10),
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: AppColor.secondaryContainer,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            Icons.add_photo_alternate_rounded,
+            color: AppColor.onSurfaceVariant,
+            size: 24,
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // Main Text
+        const Text(
+          'Chọn ảnh',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColor.primaryColor,
+          ),
+        ),
+      ],
+    );
+    if (_imageFile != null) {
+      inkWellChild = InstaImageViewer(
+        child: ClipRRect(
+          borderRadius: BorderRadiusGeometry.circular(10),
+          child: Image.file(
+            _imageFile!,
+            width: double.infinity,
+            fit: BoxFit.contain,
+          ),
+        ),
+      );
+    } else if (widget.component != null &&
+        widget.component!.imageUrl != null &&
+        widget.component!.imageUrl!.isNotEmpty) {
+      inkWellChild = InstaImageViewer(
+        child: ClipRRect(
+          borderRadius: BorderRadiusGeometry.circular(10),
+          child: Image.network(
+            widget.component!.imageUrl!,
+            width: double.infinity,
+            fit: BoxFit.contain,
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: MyAppBar(title: _title),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.only(
-            left: 15,
-            right: 15,
-            bottom: 15,
-            top: showSelectExistComponent ? 0 : 15,
-          ),
+          padding: const EdgeInsets.all(15),
           children: [
+            const Text(
+              "Ảnh linh kiện",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColor.outlineVariant, width: 2),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: (inkWellChild.runtimeType == InstaImageViewer)
+                    ? null
+                    : _selectComponentImage,
+                onLongPress: _selectComponentImage,
+                child: inkWellChild,
+              ),
+            ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -401,7 +563,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
                               .push(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const SelectComponentScreen(showOutOfStockComponent: true,),
+                                      const SelectComponentScreen(
+                                        showOutOfStockComponent: true,
+                                      ),
                                 ),
                               );
 
