@@ -79,7 +79,6 @@ class _QuantityStepperState extends State<QuantityStepper> {
               textAlign: TextAlign.center,
               onChanged: (value) {
                 if (value.isEmpty) {
-                  _controller.text = widget.minValue.toString();
                   _currentValue = widget.minValue;
                 } else {
                   int? valueInt = int.tryParse(
@@ -91,6 +90,20 @@ class _QuantityStepperState extends State<QuantityStepper> {
                   }
                 }
                 widget.onChanged(_currentValue);
+              },
+              onTapOutside: (event) {
+                if (_controller.text.isEmpty) {
+                  _controller.text = widget.minValue.toString();
+                  _currentValue = widget.minValue;
+                }
+                FocusScope.of(context).unfocus();
+              },
+              onEditingComplete: () {
+                if (_controller.text.isEmpty) {
+                  _controller.text = widget.minValue.toString();
+                  _currentValue = widget.minValue;
+                }
+                FocusScope.of(context).unfocus();
               },
             ),
           ),
