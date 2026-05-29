@@ -86,7 +86,7 @@ class Component {
 
     // Xoá các giá trị null
     result.removeWhere(
-      (key, value) => value == null || value.toString().trim().isEmpty,
+      (key, value) => value.toString().trim().isEmpty,
     );
 
     return result;
