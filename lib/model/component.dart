@@ -33,6 +33,22 @@ class Component {
 
   bool get isLowStock => quantity < minThreshold;
 
+  factory Component.from(Component other) {
+    return Component(
+      id: other.id,
+      name: other.name,
+      quantity: other.quantity,
+      minThreshold: other.minThreshold,
+      locationID: other.locationID,
+      specs: other.specs != null ? Map<dynamic, dynamic>.from(other.specs!) : null,
+      imageUrl: other.imageUrl,
+      addedViaAI: other.addedViaAI,
+      createdAt: other.createdAt,
+      updatedAt: other.updatedAt,
+      categoryID: other.categoryID,
+    );
+  }
+
   factory Component.fromMap(Map<dynamic, dynamic> data) {
     final String createdAtStr = data['createdAt'] ?? "";
     final String updatedAtStr = data['updatedAt'] ?? "";

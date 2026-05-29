@@ -570,9 +570,10 @@ class _AddComponentFormState extends State<AddComponentForm> {
                               );
 
                           if (result != null) {
-                            result.quantity = 1;
+                            final newComponent = Component.from(result);
+                            newComponent.quantity = 1;
                             if (context.mounted) {
-                              Navigator.of(context).pop(result);
+                              Navigator.of(context).pop(newComponent);
                             }
                           }
                         },

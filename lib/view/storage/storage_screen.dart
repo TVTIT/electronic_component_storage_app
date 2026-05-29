@@ -289,7 +289,8 @@ class _StorageScreenState extends State<StorageScreen> {
                             component: value[index],
                             onTap: (component) async {
                               if (widget.isSelectScreen) {
-                                Navigator.of(context).pop(component);
+                                final newComponent = Component.from(component);
+                                Navigator.of(context).pop(newComponent);
                               } else {
                                 final result = await Navigator.of(context).push(
                                   MaterialPageRoute(
