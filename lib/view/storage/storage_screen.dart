@@ -267,12 +267,12 @@ class _StorageScreenState extends State<StorageScreen> {
                 },
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    if (notification is ScrollStartNotification ||
-                        notification is ScrollUpdateNotification) {
+                    if (!_isScrolling && (notification is ScrollStartNotification ||
+                        notification is ScrollUpdateNotification)) {
                       setState(() {
                         _isScrolling = true;
                       });
-                    } else if (notification is ScrollEndNotification) {
+                    } else if (_isScrolling && notification is ScrollEndNotification) {
                       setState(() {
                         _isScrolling = false;
                       });
