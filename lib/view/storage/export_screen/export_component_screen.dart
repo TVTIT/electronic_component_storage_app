@@ -1,8 +1,8 @@
-import 'package:electronic_component_storage_app/control/supabase_database_controller.dart';
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/custom_widget.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
+import 'package:electronic_component_storage_app/view/storage/add_component/confirm/add_component_confirm_screen.dart';
 import 'package:electronic_component_storage_app/view/storage/add_component/add_component_info_card.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,6 @@ class ExportComponentScreen extends StatefulWidget {
 
 class _ExportComponentScreenState extends State<ExportComponentScreen> {
   final ValueNotifier<List<Component>> _listExportListen = ValueNotifier([]);
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -74,41 +73,6 @@ class _ExportComponentScreenState extends State<ExportComponentScreen> {
     );
   }
 
-  Future<void> _exportComponent() async {
-    if (_listExportListen.value.isEmpty) {
-      CustomWidget.showFloatingSnackbar(
-        context,
-        text: "Bạn chưa thêm linh kiện nào",
-      );
-      return;
-    }
-    setState(() {
-      _isLoading = true;
-    });
-    try {
-      await SupabaseDatabaseController.exportBulkComponent(_listExportListen.value);
-      await SupabaseDatabaseController.getAllComponent();
-      if (mounted) {
-        CustomWidget.showFloatingSnackbar(
-          context,
-          text:
-              "Xuất kho thành công ${_listExportListen.value.length} linh kiện",
-        );
-
-        Navigator.pop(context, true);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Có lỗi xảy ra: $e')));
-      }
-    }
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +89,9 @@ class _ExportComponentScreenState extends State<ExportComponentScreen> {
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       return AddComponentInfoCard(
-                        key: ObjectKey(value[index]), //Đánh dấu key bằng component đang hiện
+                        key: ObjectKey(
+                          value[index],
+                        ), //Đánh dấu key bằng component đang hiện
                         isExportScreen: true,
                         component: value[index],
                         onQuantityChanged: (value) {
@@ -168,7 +134,8 @@ class _ExportComponentScreenState extends State<ExportComponentScreen> {
                           onPressed: () async {
                             final result = await Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const SelectComponentScreen()
+                                builder: (context) =>
+                                    const SelectComponentScreen(),
                               ),
                             );
                             if (result != null) {
@@ -194,46 +161,37 @@ class _ExportComponentScreenState extends State<ExportComponentScreen> {
                       const SizedBox(width: 5),
 
                       Expanded(
-                        child: _isLoading
-                            ? FilledButton(
-                                onPressed: () {},
-                                style: FilledButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: const SizedBox(
-                                  //Dùng SizedBox để lock lại kích thước cho giống nút khi không load
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            : FilledButton.icon(
-                                onPressed: () async {
-                                  await _exportComponent();
-                                },
-                                label: const Text(
-                                  "Xác nhận xuất kho",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                icon: const Icon(Icons.check_circle_outline),
-                                style: FilledButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                        child: FilledButton.icon(
+                          onPressed: () {
+                            if (_listExportListen.value.isEmpty) {
+                              CustomWidget.showFloatingSnackbar(
+                                context,
+                                text: "Bạn chưa thêm linh kiện nào",
+                              );
+                              return;
+                            }
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AddComponentConfirmScreen(
+                                  displayListNotifier: _listExportListen,
+                                  isExport: true,
                                 ),
                               ),
+                            );
+                          },
+                          label: const Text(
+                            "Tiếp theo",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          icon: const Icon(Icons.chevron_right),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
