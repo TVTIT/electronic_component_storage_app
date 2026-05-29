@@ -504,7 +504,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
           ),
         ),
       );
-    } else if (widget.isFromStogareScreen &&
+    } else if (widget.component != null &&
         widget.component!.imageUrl != null &&
         widget.component!.imageUrl!.isNotEmpty) {
       inkWellChild = InstaImageViewer(
