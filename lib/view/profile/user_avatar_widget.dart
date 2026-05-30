@@ -77,6 +77,7 @@ class _UserAvatarWidgetState extends State<UserAvatarWidget> {
               //Crop ảnh thành ảnh vuông
               final CroppedFile? croppedFile = await ImageCropper().cropImage(
                 sourcePath: pickedFile.path,
+                aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
                 uiSettings: [
                   AndroidUiSettings(
                     toolbarTitle: 'Chỉnh sửa ảnh đại diện',
@@ -88,6 +89,8 @@ class _UserAvatarWidgetState extends State<UserAvatarWidget> {
                   ),
                   IOSUiSettings(
                     title: 'Chỉnh sửa ảnh đại diện',
+                    cancelButtonTitle: 'Huỷ',
+                    doneButtonTitle: 'Xong',
                     aspectRatioLockEnabled: true,
                     resetAspectRatioEnabled: false,
                   ),
