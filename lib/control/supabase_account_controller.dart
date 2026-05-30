@@ -45,8 +45,8 @@ class SupabaseAccountController {
     return supabaseAuth.currentUser?.id ?? "";
   }
 
-  static bool userIsAvatarAvail() {
-    return supabaseAuth.currentUser?.userMetadata?['is_avatar_avail'] ?? false;
+  static String? userAvatarURL() {
+    return supabaseAuth.currentUser?.userMetadata?['avatar_url'];
   }
 
   static String userRoleCached = "";
@@ -77,7 +77,7 @@ class SupabaseAccountController {
       email: userEmail(),
       fullName: userName(),
       role: await userRole(),
-      isAvatarAvail: SupabaseAccountController.userIsAvatarAvail(),
+      avatarUrl: SupabaseAccountController.userAvatarURL()
     );
     return userCached;
   }
@@ -94,8 +94,8 @@ class SupabaseAccountController {
     await supabaseAuth.updateUser(UserAttributes(password: newPassword));
   }
 
-  static Future<void> updateUserAvatarAvail(bool isAvail) async {
-    await updateUserData({'is_avatar_avail': isAvail});
+  static Future<void> updateUserAvatarUrl(String? avatarUrl) async {
+    await updateUserData({'avatar_url': avatarUrl});
   }
 
   //Lấy toàn bộ user trong hệ thống (dành cho role owner)

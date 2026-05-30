@@ -27,20 +27,11 @@ class _UserAvatarWidgetState extends State<UserAvatarWidget> {
 
   String? _avatarUrl;
 
-  Future<void> _getAvatarLink() async {
-    final temp = await SupabaseStorageController.createSignedUrl(
-      bucket: 'user_avatar',
-      filePath: '${SupabaseAccountController.userCached.id}.jpg',
-    );
-    setState(() {
-      _avatarUrl = temp;
-    });
-  }
-
   @override
   void initState() {
-    if (SupabaseAccountController.userCached.isAvatarAvail) {
-      _getAvatarLink();
+    if (SupabaseAccountController.userCached.avatarUrl != null &&
+        SupabaseAccountController.userCached.avatarUrl!.isNotEmpty) {
+      _avatarUrl = SupabaseAccountController.userCached.avatarUrl!;
     }
     super.initState();
   }
@@ -53,7 +44,9 @@ class _UserAvatarWidgetState extends State<UserAvatarWidget> {
         progressIndicatorBuilder: (context, url, downloadProgress) => SizedBox(
           height: 60,
           width: 60,
-          child: Center(child: CircularProgressIndicator(value: downloadProgress.progress)),
+          child: Center(
+            child: CircularProgressIndicator(value: downloadProgress.progress),
+          ),
         ),
         errorWidget: (context, url, error) => _defaultAvatar,
       );
@@ -122,17 +115,14 @@ class _UserAvatarWidgetState extends State<UserAvatarWidget> {
 
               final newAvatarLink = await SupabaseStorageController.uploadFile(
                 bucket: 'user_avatar',
-                customFilePath:
-                    '${SupabaseAccountController.userCached.id}.jpg',
                 file: finalAvatarFile,
-                isPrivateBucket: true,
               );
 
               setState(() {
                 _avatarUrl = newAvatarLink;
               });
 
-              SupabaseAccountController.updateUserAvatarAvail(true);
+              SupabaseAccountController.updateUserAvatarUrl(newAvatarLink);
             } catch (e) {
               if (context.mounted) {
                 ScaffoldMessenger.of(
