@@ -41,13 +41,6 @@ class _UserAvatarWidgetState extends State<UserAvatarWidget> {
     if (_avatarUrl != null && _avatarUrl!.isNotEmpty) {
       _inkWellChild = CachedNetworkImage(
         imageUrl: _avatarUrl!,
-        progressIndicatorBuilder: (context, url, downloadProgress) => SizedBox(
-          height: 60,
-          width: 60,
-          child: Center(
-            child: CircularProgressIndicator(value: downloadProgress.progress),
-          ),
-        ),
         errorWidget: (context, url, error) => _defaultAvatar,
       );
     }
