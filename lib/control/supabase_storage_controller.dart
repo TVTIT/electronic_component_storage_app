@@ -17,13 +17,31 @@ class SupabaseStorageController {
     );
   }
 
+  static Future<String> createSignedUrl({
+    required String bucket,
+    required String filePath,
+    int signedUrlExpriesIn = 3600,
+  }) async {
+    return await supabase.storage
+        .from(bucket)
+        .createSignedUrl(filePath, signedUrlExpriesIn);
+  }
+
   static Future<String> uploadFile({
     required String bucket,
     required File file,
+    String? customFilePath,
     String fileExtension = ".jpg",
+    bool isPrivateBucket = false,
+    int signedUrlExpriesIn = 3600,
   }) async {
     final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    final filePath = '${_generateId().toString()}_$timestamp$fileExtension';
+    late String filePath;
+    if (customFilePath == null || customFilePath.isEmpty) {
+      filePath = '${_generateId().toString()}_$timestamp$fileExtension';
+    } else {
+      filePath = customFilePath;
+    }
     await supabase.storage
         .from(bucket)
         .upload(
@@ -31,6 +49,14 @@ class SupabaseStorageController {
           file,
           fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
         );
-    return supabase.storage.from(bucket).getPublicUrl(filePath);
+    if (isPrivateBucket) {
+      return await createSignedUrl(
+        bucket: bucket,
+        filePath: filePath,
+        signedUrlExpriesIn: signedUrlExpriesIn,
+      );
+    } else {
+      return supabase.storage.from(bucket).getPublicUrl(filePath);
+    }
   }
 }

@@ -46,6 +46,8 @@ dependencies:
   insta_image_viewer: ^1.0.4
   url_launcher: ^6.3.2
   validators: ^3.0.0
+  image_cropper: ^12.2.1
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
