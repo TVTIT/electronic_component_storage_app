@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:electronic_component_storage_app/model/my_user.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,20 @@ class UserInfoCard extends StatelessWidget {
 
   const UserInfoCard({super.key, required this.user, required this.onTap});
 
+  static const Widget _defaultAvatar = Icon(
+    Icons.person,
+    color: AppColor.onSurfaceVariant,
+    size: 32,
+  );
+
   @override
   Widget build(BuildContext context) {
+    late Widget avatarWidget;
+    if (user.avatarUrl == null || user.avatarUrl!.isEmpty) {
+      avatarWidget = _defaultAvatar;
+    } else {
+      avatarWidget = CachedNetworkImage(imageUrl: user.avatarUrl!, errorWidget: (context, url, error) => _defaultAvatar,);
+    }
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 15),
@@ -32,15 +45,12 @@ class UserInfoCard extends StatelessWidget {
             Container(
               width: 56,
               height: 56,
+              clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                 color: AppColor.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
-                Icons.person,
-                color: AppColor.onSurfaceVariant,
-                size: 32,
-              ),
+              child: avatarWidget,
             ),
             const SizedBox(width: 16),
             Expanded(

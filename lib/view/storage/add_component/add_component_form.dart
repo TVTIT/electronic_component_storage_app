@@ -10,7 +10,6 @@ import 'package:electronic_component_storage_app/view/storage/export_screen/sele
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -263,44 +262,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
   }
 
   Future<void> _selectComponentImage() async {
-    bool? isCamera = false;
-    if (mounted) {
-      isCamera = await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(Icons.camera_alt_rounded),
-                title: const Text("Camera"),
-                onTap: () => Navigator.pop(context, true),
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: const Text("Thư viện ảnh"),
-                onTap: () => Navigator.pop(context, false),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    if (isCamera == null) {
+    final File? originalFile = await CustomWidget.showChooseImageDialog(context);
+
+    if (originalFile == null) {
       return;
     }
-
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: isCamera ? ImageSource.camera : ImageSource.gallery,
-      imageQuality: 100, // Lấy chất lượng gốc trước để tự nén sau
-    );
-
-    if (pickedFile == null) {
-      return;
-    }
-
-    final File originalFile = File(pickedFile.path);
 
     // Tạo đường dẫn file tạm (temp) để lưu ảnh nén
     final Directory tempDir = await getTemporaryDirectory();

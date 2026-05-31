@@ -45,6 +45,10 @@ class SupabaseAccountController {
     return supabaseAuth.currentUser?.id ?? "";
   }
 
+  static String? userAvatarURL() {
+    return supabaseAuth.currentUser?.userMetadata?['avatar_url'];
+  }
+
   static String userRoleCached = "";
   //Đặt trong try-catch
   static Future<String> userRole() async {
@@ -73,6 +77,7 @@ class SupabaseAccountController {
       email: userEmail(),
       fullName: userName(),
       role: await userRole(),
+      avatarUrl: SupabaseAccountController.userAvatarURL()
     );
     return userCached;
   }
@@ -87,6 +92,10 @@ class SupabaseAccountController {
 
   static Future<void> updateUserPassword(String newPassword) async {
     await supabaseAuth.updateUser(UserAttributes(password: newPassword));
+  }
+
+  static Future<void> updateUserAvatarUrl(String? avatarUrl) async {
+    await updateUserData({'avatar_url': avatarUrl});
   }
 
   //Lấy toàn bộ user trong hệ thống (dành cho role owner)

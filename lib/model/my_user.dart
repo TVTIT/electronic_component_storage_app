@@ -7,6 +7,7 @@ class MyUser {
     this.password,
     required this.fullName,
     required this.role,
+    this.avatarUrl,
     this.createdAt,
     this.lastSignInAt,
   }) : roleName =
@@ -19,6 +20,7 @@ class MyUser {
   String fullName;
   String role;
   String roleName;
+  String? avatarUrl;
   DateTime? createdAt;
   DateTime? lastSignInAt;
 
@@ -29,6 +31,7 @@ class MyUser {
       password: data['password'],
       fullName: data['full_name'] ?? 'Người dùng chưa đặt tên',
       role: data['role'] ?? 'manager',
+      avatarUrl: data['avatar_url'],
       createdAt: DateTime.tryParse(data['created_at'] ?? ""),
       lastSignInAt: DateTime.tryParse(data['last_sign_in_at'] ?? ""),
     );
@@ -41,6 +44,7 @@ class MyUser {
       "password": password,
       "full_name": fullName,
       "role": role,
+      "avatar_url": avatarUrl,
       "created_at": createdAt?.toIso8601String(),
       "last_sign_in_at": lastSignInAt?.toIso8601String(),
     };
