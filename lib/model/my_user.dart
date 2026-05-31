@@ -10,19 +10,20 @@ class MyUser {
     this.avatarUrl,
     this.createdAt,
     this.lastSignInAt,
-  }) : roleName =
-           SupabaseAccountController.rolesMapCached[role]['name'] ??
-           "Nhân viên quản lý";
+  });
 
   String? id;
   String email;
   String? password;
   String fullName;
   String role;
-  String roleName;
   String? avatarUrl;
   DateTime? createdAt;
   DateTime? lastSignInAt;
+
+  String get roleName =>
+      SupabaseAccountController.rolesMapCached[role]['name'] ??
+      "Nhân viên quản lý";
 
   factory MyUser.fromMap(Map<String, dynamic> data) {
     return MyUser(
