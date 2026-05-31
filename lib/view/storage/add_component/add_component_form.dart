@@ -262,7 +262,9 @@ class _AddComponentFormState extends State<AddComponentForm> {
   }
 
   Future<void> _selectComponentImage() async {
-    final File? originalFile = await CustomWidget.showChooseImageDialog(context);
+    final File? originalFile = await CustomWidget.showChooseImageDialog(
+      context,
+    );
 
     if (originalFile == null) {
       return;
@@ -294,6 +296,11 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
   Future<String?> _uploadImage() async {
     if (_imageFile == null) {
+      if (widget.component != null &&
+          widget.component!.imageUrl != null &&
+          widget.component!.imageUrl!.isNotEmpty) {
+        return widget.component!.imageUrl!;
+      }
       return null;
     }
     final result = await SupabaseStorageController.uploadFile(
