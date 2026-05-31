@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:electronic_component_storage_app/control/supabase_account_controller.dart';
 import 'package:electronic_component_storage_app/model/my_user.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
@@ -7,6 +8,12 @@ import 'package:flutter/material.dart';
 
 class UserListWidget extends StatelessWidget {
   const UserListWidget({super.key});
+
+  static const _defaultAvatar = Icon(
+    Icons.account_circle,
+    size: 48,
+    color: AppColor.primaryDarkColor,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +73,28 @@ class UserListWidget extends StatelessWidget {
         const SizedBox(height: 16),
 
         Column(
-          children: listUserDisplay.map((e) => _buildMemberCard(context, e)).toList(),
+          children: listUserDisplay
+              .map((e) => _buildMemberCard(context, e))
+              .toList(),
         ),
       ],
     );
   }
 
   Widget _buildMemberCard(BuildContext context, MyUser user) {
+    late Widget avatarWidget;
+    if (user.avatarUrl == null || user.avatarUrl!.isEmpty) {
+      avatarWidget = _defaultAvatar;
+    } else {
+      avatarWidget = SizedBox(
+        height: 48,
+        width: 48,
+        child: CachedNetworkImage(
+          imageUrl: user.avatarUrl!,
+          errorWidget: (context, url, error) => _defaultAvatar,
+        ),
+      );
+    }
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 16),
@@ -105,10 +127,11 @@ class UserListWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.account_circle,
-                  size: 48,
-                  color: AppColor.primaryDarkColor,
+                Material(
+                  color: Colors.transparent,
+                  shape: const CircleBorder(),
+                  clipBehavior: Clip.hardEdge,
+                  child: avatarWidget,
                 ),
                 const SizedBox(width: 16),
 
