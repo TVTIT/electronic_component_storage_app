@@ -14,11 +14,10 @@ class Component {
     this.updatedAt,
     required this.categoryID,
     this.datasheetUrl
-  }) : searchName = name.toLowerCase().toUnaccented().trim();
+  });
 
   String? id;
   String name;
-  String searchName;
   int quantity;
   int minThreshold = 10;
   String locationID;
@@ -32,6 +31,8 @@ class Component {
 
   //static const minThreshold = 10;
   //static final DateTime _defaultTime = DateTime(2000);
+
+  String get searchName => name.toLowerCase().toUnaccented().trim();
 
   bool get isLowStock => quantity < minThreshold;
 
