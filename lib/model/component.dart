@@ -13,7 +13,9 @@ class Component {
     this.createdAt,
     this.updatedAt,
     required this.categoryID,
-    this.datasheetUrl
+    this.datasheetUrl,
+    this.categoryName,
+    this.locationName,
   });
 
   String? id;
@@ -28,6 +30,8 @@ class Component {
   DateTime? updatedAt;
   String categoryID;
   String? datasheetUrl;
+  String? categoryName;
+  String? locationName;
 
   //static const minThreshold = 10;
   //static final DateTime _defaultTime = DateTime(2000);
@@ -61,7 +65,7 @@ class Component {
     return Component(
       id: data['id'] ?? "",
       name: data['name'] ?? "",
-      quantity: data['quantity'] ?? "",
+      quantity: data['quantity'] ?? 0,
       minThreshold: data['min_threshold'] ?? 10,
       locationID: data['location_id'] ?? "",
       specs: data['specs'] ?? {},
@@ -70,7 +74,9 @@ class Component {
       createdAt: createdAt,
       updatedAt: updatedAt,
       categoryID: data['category_id'],
-      datasheetUrl: data['datasheet_url']
+      datasheetUrl: data['datasheet_url'],
+      categoryName: data['category_name'],
+      locationName: data['location_name'],
     );
   }
 
@@ -87,13 +93,13 @@ class Component {
       'added_via_ai': addedViaAI,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
-      'datasheet_url': datasheetUrl
+      'datasheet_url': datasheetUrl,
+      'category_name': categoryName,
+      'location_name': locationName,
     };
 
     // Xoá các giá trị null
-    result.removeWhere(
-      (key, value) => value.toString().trim().isEmpty,
-    );
+    result.removeWhere((key, value) => value.toString().trim().isEmpty);
 
     return result;
   }

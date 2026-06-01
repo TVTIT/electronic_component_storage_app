@@ -107,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await SupabaseDatabaseController.getInitialData();
     if (SupabaseAccountController.userCached.role == 'owner') {
       await SupabaseAccountController.getAllUserInSystem();
+      await SupabaseDatabaseController.getAllTransactionHistory();
     }
     if (mounted) {
       Navigator.pushNamedAndRemoveUntil(

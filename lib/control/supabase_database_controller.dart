@@ -1,5 +1,6 @@
 import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/model/cabinet.dart';
+import 'package:electronic_component_storage_app/model/transaction_header.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseDatabaseController {
@@ -153,5 +154,33 @@ class SupabaseDatabaseController {
           'id',
           listComponents.map((component) => component.id).toList(),
         );
+  }
+
+  static List<TransactionHeader> listTransactionsCached = [];
+  static Future<List<TransactionHeader>> getAllTransactionHistory() async {
+    final List<Map<String, dynamic>> listMap = await supabase.rpc(
+      'get_transaction_history',
+    );
+    listTransactionsCached = listMap
+        .map((e) => TransactionHeader.fromMap(e))
+        .toList();
+    return listTransactionsCached;
+  }
+
+  static Future<List<Component>> getTransactionDetails(
+    String transactionId,
+  ) async {
+    final List<Map<String, dynamic>> listMap = await supabase.rpc(
+      'get_transaction_details',
+      params: {'p_transaction_id': transactionId},
+    );
+
+    return listMap
+        .map(
+          (e) => Component.fromMap({
+            ...e, 'category_id': '', //Để component.categoryId không bị null
+          }),
+        )
+        .toList();
   }
 }
