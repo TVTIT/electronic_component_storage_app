@@ -35,7 +35,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       RestockItemsWidget(),
     ];
     if (SupabaseAccountController.userRoleCached == 'owner') {
-      listViewChildren.addAll([const SizedBox(height: 20), TransactionsListWidget()]);
+      listViewChildren.addAll([
+        const SizedBox(height: 20),
+        TransactionsListWidget(),
+      ]);
     }
     if (SupabaseAccountController.userRoleCached == 'admin' ||
         SupabaseAccountController.userRoleCached == 'owner') {
@@ -49,6 +52,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           await SupabaseDatabaseController.getInitialData();
+          if (SupabaseAccountController.userCached.role == 'owner') {
+            await SupabaseAccountController.getAllUserInSystem();
+            await SupabaseDatabaseController.getAllTransactionHistory();
+          }
           setState(() {});
         },
         child: ListView(
