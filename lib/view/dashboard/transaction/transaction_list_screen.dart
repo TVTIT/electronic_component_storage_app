@@ -80,7 +80,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
           _changeDisplayList();
         },
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
           child: Column(
             children: [
               TextFormField(
