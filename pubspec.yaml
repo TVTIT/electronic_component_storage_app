@@ -48,6 +48,9 @@ dependencies:
   validators: ^3.0.0
   image_cropper: ^12.2.1
   cached_network_image: ^3.4.1
+  flutter_localization: ^0.4.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

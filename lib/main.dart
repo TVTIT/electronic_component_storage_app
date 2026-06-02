@@ -5,11 +5,12 @@ import 'package:electronic_component_storage_app/view/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  
+
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_PUBLISHABLE_KEY']!,
@@ -37,17 +38,25 @@ class MyApp extends StatelessWidget {
           fillColor: AppColor.greyInputColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none
+            borderSide: BorderSide.none,
           ),
-        )
+        ),
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
         '/forgot-password': (context) => const ForgotPasswordScreen(),
-        '/home': (context) => const HomeScreen()
+        '/home': (context) => const HomeScreen(),
       },
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('vi', ''),
+      ],
     );
   }
 }
