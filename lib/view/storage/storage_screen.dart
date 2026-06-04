@@ -298,6 +298,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                       component: component,
                                       isFromStogareScreen: true,
                                     ),
+                                    settings: RouteSettings(name: 'add_component_form'),
                                   ),
                                 );
                                 if (result != null && result) {

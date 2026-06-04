@@ -49,6 +49,10 @@ class SupabaseAccountController {
     return supabaseAuth.currentUser?.userMetadata?['avatar_url'];
   }
 
+  static String userAccessToken() {
+    return supabaseAuth.currentSession!.accessToken;
+  }
+
   static String userRoleCached = "";
   //Đặt trong try-catch
   static Future<String> userRole() async {

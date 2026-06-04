@@ -6,6 +6,7 @@ import 'package:electronic_component_storage_app/model/component.dart';
 import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:electronic_component_storage_app/view/my_app_bar.dart';
 import 'package:electronic_component_storage_app/view/custom_widget.dart';
+import 'package:electronic_component_storage_app/view/storage/add_component/resistor_scanner_screen.dart';
 import 'package:electronic_component_storage_app/view/storage/export_screen/select_component_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -343,6 +344,18 @@ class _AddComponentFormState extends State<AddComponentForm> {
     }
   }
 
+  Future<void> _onScanResistorBtnTap() async {
+    final imageFile = await CustomWidget.showChooseImageDialog(context);
+    if (imageFile == null || !mounted) {
+      return;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ResistorScannerScreen(imageFile: imageFile),
+      ),
+    );
+  }
+
   Widget _buildTextField(
     String label,
     String hint,
@@ -378,6 +391,35 @@ class _AddComponentFormState extends State<AddComponentForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTextField('Giá trị', '10k, 1M, 220R', _resistanceController),
+
+        // Nút quét giá trị điện trở bằng Camera AI, có badge "Mới"
+        Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Badge(
+            label: const Text('Mới'),
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+
+            backgroundColor: AppColor.tertiaryContainer,
+            offset: const Offset(-5, -5),
+            child: SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _onScanResistorBtnTap,
+                icon: const Icon(Icons.camera_alt_outlined),
+                label: const Text('Quét giá trị điện trở vạch'),
+                style: FilledButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  //side: const BorderSide(color: AppColor.primaryColor, width: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+
         _buildTextField('Công suất chịu tải', '1/4W, 1W, 5W', _powerController),
         _buildTextField('Sai số', '1%, 5%', _toleranceController),
         _buildTextField(
