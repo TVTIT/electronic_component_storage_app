@@ -60,6 +60,21 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
     }
   }
 
+  void _popWithResult(BuildContext dialogContext, String resistorValue) {
+    Navigator.of(dialogContext).pop();
+    Navigator.of(context).popUntilWithResult(
+      (route) => route.settings.name == "add_component_form",
+      resistorValue,
+    );
+  }
+
+  void _popWithoutResult(BuildContext dialogContext) {
+    Navigator.of(dialogContext).pop();
+    Navigator.of(
+      context,
+    ).popUntil((route) => route.settings.name == "add_component_form");
+  }
+
   void _showResultPopup(Map<String, dynamic> response) {
     final int errorCode = response['error_code'] as int;
     final String message = response['message'] as String;
@@ -114,18 +129,11 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
             ),
             actions: [
               TextButton(
-                onPressed: () {
-                  Navigator.pop(dialogContext);
-                  Navigator.pop(context); // Quay lại màn hình trước
-                },
+                onPressed: () => _popWithoutResult(dialogContext),
                 child: const Text('Huỷ'),
               ),
               FilledButton(
-                onPressed: () {
-                  Navigator.pop(dialogContext);
-                  // Trả kết quả về màn hình AddComponentForm
-                  Navigator.pop(context, resistorValue);
-                },
+                onPressed: () => _popWithResult(dialogContext, resistorValue),
                 child: const Text('OK'),
               ),
             ],
@@ -169,11 +177,8 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
             actions: [
               Center(
                 child: FilledButton(
-                  onPressed: () {
-                    Navigator.pop(dialogContext);
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Đã hiểu'),
+                  onPressed: () => _popWithoutResult(dialogContext),
+                  child: const Text('OK'),
                 ),
               ),
             ],
@@ -201,11 +206,8 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
           actions: [
             Center(
               child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(dialogContext);
-                  Navigator.pop(context);
-                },
-                child: const Text('Đóng'),
+                onPressed: () => _popWithoutResult(dialogContext),
+                child: const Text('OK'),
               ),
             ),
           ],

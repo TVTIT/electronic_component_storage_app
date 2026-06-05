@@ -349,11 +349,15 @@ class _AddComponentFormState extends State<AddComponentForm> {
     if (imageFile == null || !mounted) {
       return;
     }
-    Navigator.of(context).push(
+    final String? resistorValue = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ResistorScannerScreen(imageFile: imageFile),
       ),
     );
+
+    if (resistorValue != null) {
+      _resistanceController.text = resistorValue;
+    }
   }
 
   Widget _buildTextField(
