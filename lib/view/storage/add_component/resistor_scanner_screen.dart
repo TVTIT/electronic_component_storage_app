@@ -59,11 +59,11 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
     }
   }
 
-  void _popWithResult(BuildContext dialogContext, String resistorValue) {
+  void _popWithResult(BuildContext dialogContext, Map<dynamic, dynamic> result) {
     Navigator.of(dialogContext).pop();
     Navigator.of(context).popUntilWithResult(
       (route) => route.settings.name == "add_component_form",
-      resistorValue,
+      result,
     );
   }
 
@@ -86,6 +86,19 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
         // Nhận diện thành công
         if (errorCode == 0 && data != null && data['value'] != null) {
           final String resistorValue = data['value'] as String;
+          final String? resistorTolerance = data['tolerance'] as String?;
+
+          String displayValue = resistorValue;
+
+          if (resistorTolerance != null) {
+            displayValue += "±$resistorTolerance";
+          }
+          displayValue += " Ω";
+          
+          final Map<String, dynamic> result = {
+            'resistor_value': resistorValue,
+            'resistor_tolerance': resistorTolerance,
+          };
 
           return AlertDialog(
             shape: RoundedRectangleBorder(
@@ -101,7 +114,7 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
                 const Icon(Icons.check_circle, color: Colors.green, size: 60),
                 const SizedBox(height: 16),
                 Text(
-                  resistorValue,
+                  displayValue,
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -132,7 +145,7 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
                 child: const Text('Huỷ'),
               ),
               FilledButton(
-                onPressed: () => _popWithResult(dialogContext, resistorValue),
+                onPressed: () => _popWithResult(dialogContext, result),
                 child: const Text('OK'),
               ),
             ],

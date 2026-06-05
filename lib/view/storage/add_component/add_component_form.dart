@@ -349,14 +349,15 @@ class _AddComponentFormState extends State<AddComponentForm> {
     if (imageFile == null || !mounted) {
       return;
     }
-    final String? resistorValue = await Navigator.of(context).push(
+    final Map<String, dynamic>? result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ResistorScannerScreen(imageFile: imageFile),
       ),
     );
 
-    if (resistorValue != null) {
-      _resistanceController.text = resistorValue;
+    if (result != null) {
+      _resistanceController.text = result['resistor_value'] ?? "";
+      _toleranceController.text = result['resistor_tolerance'] ?? "";
     }
   }
 
