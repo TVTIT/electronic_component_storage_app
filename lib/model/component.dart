@@ -94,8 +94,8 @@ class Component {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'datasheet_url': datasheetUrl,
-      'category_name': categoryName,
-      'location_name': locationName,
+      'category_name': categoryName ?? "",
+      'location_name': locationName ?? "", //Để bị xoá khi null
     };
 
     // Xoá các giá trị null
