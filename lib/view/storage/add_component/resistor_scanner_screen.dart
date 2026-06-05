@@ -54,7 +54,6 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
         _showResultPopup({
           "error_code": -1,
           "message": "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.",
-          "data": [],
         });
       }
     }
@@ -78,15 +77,15 @@ class _ResistorScannerScreenState extends State<ResistorScannerScreen>
   void _showResultPopup(Map<String, dynamic> response) {
     final int errorCode = response['error_code'] as int;
     final String message = response['message'] as String;
-    final List<dynamic> data = response['data'] as List<dynamic>;
+    final Map<String, dynamic>? data = response['data'] as Map<String, dynamic>?;
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         // Nhận diện thành công
-        if (errorCode == 0 && data.isNotEmpty && data[0]['value'] != null) {
-          final String resistorValue = data[0]['value'] as String;
+        if (errorCode == 0 && data != null && data['value'] != null) {
+          final String resistorValue = data['value'] as String;
 
           return AlertDialog(
             shape: RoundedRectangleBorder(
