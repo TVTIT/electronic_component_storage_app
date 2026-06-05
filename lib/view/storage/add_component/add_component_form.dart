@@ -681,6 +681,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
               validator: (value) => value == null || value.isEmpty
                   ? 'Vui lòng nhập tên linh kiện'
                   : null,
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
             ),
             const SizedBox(height: 15),
 
@@ -708,6 +709,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
                         validator: (value) => value == null || value.isEmpty
                             ? 'Nhập số lượng'
                             : null,
+                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
                         onTap: () {
                           if (widget.isFromStogareScreen) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -741,6 +743,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
                         ],
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(hintText: '10'),
+                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
                       ),
                     ],
                   ),
