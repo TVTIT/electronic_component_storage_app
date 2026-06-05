@@ -108,6 +108,9 @@ class _AddComponentScreenState extends State<AddComponentScreen> {
                               MaterialPageRoute(
                                 builder: (context) =>
                                     AddComponentForm(component: value[index]),
+                                settings: RouteSettings(
+                                  name: 'add_component_form',
+                                ),
                               ),
                             );
                             if (result != null) {
@@ -156,6 +159,9 @@ class _AddComponentScreenState extends State<AddComponentScreen> {
                             final result = await Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => const AddComponentForm(),
+                                settings: RouteSettings(
+                                  name: 'add_component_form',
+                                ),
                               ),
                             );
                             if (result != null) {
