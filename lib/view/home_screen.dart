@@ -1,5 +1,4 @@
 import 'package:electronic_component_storage_app/view/dashboard/dashboard_screen.dart';
-import 'package:electronic_component_storage_app/view/notification_screen.dart';
 import 'package:electronic_component_storage_app/view/profile/profile_screen.dart';
 import 'package:electronic_component_storage_app/view/storage/storage_screen.dart';
 import 'package:flutter/material.dart';
@@ -46,10 +45,10 @@ class HomeScreen extends StatelessWidget {
         //   item: _itemConfigBuilder(icon: Icon(Icons.add), inactiveForegroundColor: Colors.white),
         //   //item: ItemConfig(icon: Icon(Icons.add), inactiveForegroundColor: Colors.white, activeForegroundColor: Color(0xFF006064))
         // ),
-        PersistentTabConfig(
-          screen: const NotificationScreen(),
-          item: _itemConfigBuilder(icon: Icon(Icons.notifications), title: "Thông báo"),
-        ),
+        // PersistentTabConfig(
+        //   screen: const NotificationScreen(),
+        //   item: _itemConfigBuilder(icon: Icon(Icons.notifications), title: "Thông báo"),
+        // ),
         PersistentTabConfig(
           screen: const ProfileScreen(),
           item: _itemConfigBuilder(icon: Icon(Icons.person), title: "Tài khoản"),
