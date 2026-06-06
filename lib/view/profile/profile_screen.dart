@@ -5,6 +5,7 @@ import 'package:electronic_component_storage_app/view/profile/change_user_passwo
 import 'package:electronic_component_storage_app/view/profile/editable_user_display_name.dart';
 import 'package:electronic_component_storage_app/view/profile/logout_button.dart';
 import 'package:electronic_component_storage_app/view/profile/user_avatar_widget.dart';
+import 'package:electronic_component_storage_app/view/profile/version_info_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -92,6 +93,10 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 30),
 
           LogoutButton(),
+
+          const SizedBox(height: 30,),
+
+          VersionInfoWidget(),
         ],
       ),
     );
