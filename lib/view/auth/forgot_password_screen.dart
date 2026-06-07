@@ -46,14 +46,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               TextFormField(
                 controller: _emailController,
                 onTapOutside: (event) =>
-                  FocusManager.instance.primaryFocus?.unfocus(),
+                    FocusManager.instance.primaryFocus?.unfocus(),
                 decoration: InputDecoration(
                   labelText: "Email",
                   hintText: "Nhập email",
                   prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide()
-                  )
+                  border: OutlineInputBorder(borderSide: BorderSide()),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -68,19 +66,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 },
               ),
 
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
 
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    await _resetPassword(_emailController.text);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
+              FilledButton(
+                onPressed: _isLoading
+                    ? () {}
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          await _resetPassword(_emailController.text);
+                        }
+                      },
+                style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(50),
                 ),
                 child: _isLoading
-                    ? const CircularProgressIndicator()
+                    ? const SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5,),
+                      )
                     : const Text('Đặt lại mật khẩu'),
               ),
             ],

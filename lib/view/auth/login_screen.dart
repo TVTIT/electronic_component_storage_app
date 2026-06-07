@@ -212,17 +212,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 20),
 
-            ElevatedButton(
+            FilledButton(
               onPressed: _isLoggingIn
                   ? () {}
                   : () async {
                       await _signIn();
                     },
-              style: ElevatedButton.styleFrom(
+              style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
               child: _isLoggingIn
-                  ? const CircularProgressIndicator()
+                  ? const SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
+                    )
                   : const Text('Đăng nhập'),
             ),
 

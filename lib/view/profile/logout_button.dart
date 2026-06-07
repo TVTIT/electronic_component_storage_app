@@ -1,3 +1,4 @@
+import 'package:electronic_component_storage_app/view/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:electronic_component_storage_app/view/custom_widget.dart';
@@ -34,19 +35,30 @@ class _LogoutButtonState extends State<LogoutButton> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return ElevatedButton(
+      return FilledButton(
         onPressed: () {},
-        child: const CircularProgressIndicator(),
+        style: FilledButton.styleFrom(
+          minimumSize: const Size.fromHeight(50),
+          backgroundColor: AppColor.errorColor,
+        ),
+        child: const SizedBox(
+          height: 30,
+          width: 30,
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 2.5,
+          ),
+        ),
       );
     }
-    
-    return ElevatedButton.icon(
+
+    return FilledButton.icon(
       onPressed: () async {
         await _logout();
       },
-      style: ElevatedButton.styleFrom(
+      style: FilledButton.styleFrom(
         minimumSize: const Size.fromHeight(50),
-        foregroundColor: const Color.fromARGB(255, 172, 74, 67),
+        backgroundColor: const Color.fromARGB(255, 172, 74, 67),
       ),
       icon: Icon(Icons.logout),
       label: Text("Đăng xuất"),

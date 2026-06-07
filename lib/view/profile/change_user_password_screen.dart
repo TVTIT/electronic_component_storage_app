@@ -36,7 +36,10 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
             context: context,
             builder: (dialogContext) => AlertDialog(
               title: const Text("Đổi mật khẩu thành công"),
-              content: const Text("Bạn đã đổi mật khẩu thành công"),
+              content: const Text(
+                "Bạn đã đổi mật khẩu thành công",
+                textAlign: TextAlign.center,
+              ),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -160,10 +163,20 @@ class _ChangeUserPasswordScreenState extends State<ChangeUserPasswordScreen> {
 
               const SizedBox(height: 30),
 
-              ElevatedButton(
-                onPressed: _isLoading ? () {} : () async => _changeUserPassword(),
+              FilledButton(
+                style: FilledButton.styleFrom(minimumSize: Size.fromHeight(50)),
+                onPressed: _isLoading
+                    ? () {}
+                    : () async => _changeUserPassword(),
                 child: _isLoading
-                    ? const CircularProgressIndicator()
+                    ? const SizedBox(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
                     : const Text("Đổi mật khẩu"),
               ),
             ],

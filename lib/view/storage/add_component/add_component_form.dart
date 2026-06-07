@@ -709,7 +709,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
                         validator: (value) => value == null || value.isEmpty
                             ? 'Nhập số lượng'
                             : null,
-                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                         onTap: () {
                           if (widget.isFromStogareScreen) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -743,7 +744,8 @@ class _AddComponentFormState extends State<AddComponentForm> {
                         ],
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(hintText: '10'),
-                        onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
                       ),
                     ],
                   ),
@@ -799,16 +801,19 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
             const SizedBox(height: 15),
 
-            ElevatedButton(
-              onPressed: _isLoading ? null : _addComponent,
-              style: ElevatedButton.styleFrom(
+            FilledButton(
+              onPressed: _isLoading ? () {} : _addComponent,
+              style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
               ),
               child: _isLoading
                   ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                      width: 30,
+                      height: 30,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      ),
                     )
                   : Text(_buttonText),
             ),
