@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TransactionHeader {
   final String id;
-  final String userId;
+  final String? userId;
   final String userName;
   final TransactionType type;
   final String? notes;
@@ -12,7 +12,7 @@ class TransactionHeader {
 
   TransactionHeader({
     required this.id,
-    required this.userId,
+    this.userId,
     required this.userName,
     required this.type,
     this.notes,
