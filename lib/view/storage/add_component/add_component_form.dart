@@ -71,9 +71,10 @@ class _AddComponentFormState extends State<AddComponentForm> {
   String? _selectedCategory;
   String? _selectedLocation;
   bool _isLoading = false;
+  bool _isDeleting = false;
 
   late String _title = "Thêm linh kiện mới";
-  late String _buttonText = "Thêm linh kiện";
+  //late String _buttonText = "Thêm linh kiện";
   late String _snackBarText = "Thêm linh kiện thành công";
 
   File? _imageFile;
@@ -89,7 +90,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
     if (widget.component != null) {
       _autoFillForm(widget.component!);
       _title = "Sửa linh kiện";
-      _buttonText = "Lưu lại";
+      //_buttonText = "Lưu lại";
       _snackBarText = "Sửa linh kiện thành công";
     }
   }
@@ -167,6 +168,68 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
     if (component.datasheetUrl != null && component.datasheetUrl!.isNotEmpty) {
       _datasheetLinkController.text = component.datasheetUrl!;
+    }
+  }
+
+  Future<void> _deleteComponent() async {
+    if (widget.component!.quantity > 0) {
+      CustomWidget.showFloatingSnackbar(
+        context,
+        text: "Bạn không được xoá linh kiện còn hàng",
+      );
+      return;
+    }
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Xác nhận xoá linh kiện'),
+        content: Text(
+          'Bạn có chắc chắn muốn xóa linh kiện "${widget.component!.name}"? Hành động này không thể hoàn tác.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Hủy'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColor.errorColor,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Xóa'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true || !mounted) return;
+
+    setState(() {
+      _isDeleting = true;
+    });
+
+    try {
+      await SupabaseDatabaseController.softDeleteComponent(widget.component!);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Có lỗi xảy ra $e")));
+        return;
+      }
+    }
+
+    if (mounted) {
+      CustomWidget.showFloatingSnackbar(
+        context,
+        text: "Xoá linh kiện thành công",
+      );
+      setState(() {
+        _isDeleting = false;
+      });
+      Navigator.of(context).pop();
     }
   }
 
@@ -799,22 +862,83 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
             const SizedBox(height: 15),
 
-            FilledButton(
-              onPressed: _isLoading ? () {} : _addComponent,
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2.5,
+            widget.component == null
+                ? FilledButton(
+                    onPressed: _isLoading ? () {} : _addComponent,
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    child: _isLoading
+                        ? const SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : const Text("Thêm linh kiện"),
+                  )
+                :
+                  // Action Buttons (Xóa bên trái, Hủy & Lưu bên phải)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (_isDeleting)
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColor.errorColor,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: () {},
+                          child: const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      else
+                        FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColor.errorColor,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: _isLoading ? null : _deleteComponent,
+                          icon: const Icon(Icons.delete_forever),
+                          label: const Text('Xoá linh kiện'),
+                        ),
+
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Huỷ'),
+                          ),
+                          const SizedBox(width: 8),
+                          if (_isLoading)
+                            FilledButton(
+                              onPressed: () {},
+                              child: const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          else
+                            FilledButton(
+                              onPressed: _isDeleting ? null : _addComponent,
+                              child: const Text('Lưu'),
+                            ),
+                        ],
                       ),
-                    )
-                  : Text(_buttonText),
-            ),
+                    ],
+                  ),
           ],
         ),
       ),
