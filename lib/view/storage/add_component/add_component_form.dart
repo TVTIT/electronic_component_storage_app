@@ -131,9 +131,7 @@ class _AddComponentFormState extends State<AddComponentForm> {
 
   void _autoFillForm(Component component) {
     _nameController.text = component.name;
-    _quantityController.text = component.quantity > 0
-        ? component.quantity.toString()
-        : '';
+    _quantityController.text = component.quantity.toString();
     _minQuantityController.text = component.minThreshold.toString();
 
     _selectedCategory = component.categoryID;
