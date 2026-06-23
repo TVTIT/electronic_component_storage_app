@@ -77,6 +77,20 @@ class CabinetCard extends StatelessWidget {
                     fontSize: 12,
                   ),
                 ),
+
+                if (cabinet.description != null &&
+                    cabinet.description!.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    cabinet.description!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: AppColor.onSurfaceVariant.withValues(alpha: 0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ],
             ),
           ],
