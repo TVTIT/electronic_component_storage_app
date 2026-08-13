@@ -125,3 +125,14 @@ flutter build ios --release
 ```
 
 Mở `ios/Runner.xcworkspace` bằng Xcode để cấu hình signing và archive cho App Store.
+
+
+## Về dự án này
+
+Đây là bài tập lớn của sinh viên Trần Vĩnh Trung môn Kỹ thuật phần mềm ứng dụng (ET3260) lớp 169194 của Trường Điện - Điện tử, Đại học Bách khoa Hà Nội học kì 2025.2.
+
+Dự án chắc hẳn còn nhiều thiếu sót. Vì đây là dự án mã nguồn mở nên nếu bạn muốn đóng góp cho dự án này hãy [tạo 1 Pull request](https://github.com/TVTIT/electronic_component_storage_app/pulls) hoặc [tạo 1 Issue](https://github.com/TVTIT/electronic_component_storage_app/issues/new)
+
+## Giấy phép (License)
+
+Dự án được phân phối dưới giấy phép MIT
