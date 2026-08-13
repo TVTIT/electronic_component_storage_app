@@ -91,6 +91,10 @@ SUPABASE_PUBLISHABLE_KEY=your_publishable_key
 flutter pub get
 ```
 
+### Thay đổi URL của API Đọc điện trở vạch (tuỳ chọn)
+
+Bạn cần xây dựng 1 API như repo [resistor_color_band_recognition_api](https://github.com/TVTIT/resistor_color_band_recognition_api), sau dó thay đổi URL ở dòng 10 trong file `lib/control/api_controller.dart` thành URL API của bạn
+
 ### Build
 
 #### Android
